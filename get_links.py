@@ -8,7 +8,7 @@ import re
 
 if __name__ == "__main__":
 
-	for dir in os.listdir('.'):
+    for dir in os.listdir('.'):
 		if not os.path.isfile(dir):
 			
 			#receives file from stdin
