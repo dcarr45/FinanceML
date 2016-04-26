@@ -4,15 +4,26 @@ from pyspark import SparkConf, SparkContext
 
 import sys
 import os
+from bs4 import BeautifulSoup
 
 def extract(spark):
     cusips = set()
     for line in list(open('cusip.txt')):
         cusips.add(line.replace('"','').strip())
     
-    forms = spark.textFile('hdfs:///user/carrdp/13F_2015/all_forms/Q1_forms') \
-        .map(lambda form = get
+    forms = spark.textFile('hdfs:///user/carrdp/FinanceML/13F/all_forms/test_forms') \
+        .map(lambda form: getInfoTable(form, cusips)) \
+        .saveAsTextFile('hdfs:///user/carrdp/FinanceML/13F/res')
+
+def getInfoTable(text, cusips):
+    #receives form as indented xml
+    soup = BeautifulSoup(text)
+
+    for tag in soup.find_all('infoTable'):
+        if tag.cusip.string in cusips
+        
     
+         
 
 if __name__ == "__main__":
     conf = SparkConf()
