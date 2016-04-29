@@ -28,4 +28,4 @@ print len(df_features)
 
 df_final_feature = reduce(lambda left,right: pd.merge(left,right,on='Date'), df_features)
 
-print df_final_feature
+df_final_feature.to_csv('feature_matrix.csv', sep = ',')
