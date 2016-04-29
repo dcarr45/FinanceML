@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 from subprocess import call
-import sys
 import os
 import re
 
@@ -9,13 +8,23 @@ import re
 if __name__ == "__main__":
 
     for dir in os.listdir('.'):
-        if not os.path.isfile(dir):
+        if not os.path.isfile(dir) and str(dir).startswith('Q'):
+            qtr = 'QTR' + dir[1] + '/'
+            yr = dir[2:] + '/'
+            path = 'ftp://ftp.sec.gov/edgar/full-index/' + yr + qtr + 'form.idx'
+            call(['wget', path, '-P', dir])
 
-            #receives file from stdin
             links = []
             unique_ids = set()
 
-            #since the 13F-HR/A (amendment forms) are last in the file,
+            ind = open(dir + '/index.txt', 'w')
+
+            for line in open(dir + '/form.idx', 'r').readlines()[10:]:
+                if line.split()[0].startswith('13F'):
+                    ind.write(line)
+            ind.close()
+
+	        #since the 13F-HR/A (amendment forms) are last in the file,
             #reverse to add most recent files first and no duplicates
             file = open(dir + '/index.txt')
 
@@ -28,6 +37,8 @@ if __name__ == "__main__":
                 if cik not in unique_ids:
                     links.append(link)
                     unique_ids.add(cik)
+	    
+	        file.close()
 
             out = open(dir + '/links.txt', 'w')
 
@@ -35,5 +46,3 @@ if __name__ == "__main__":
                 path = 'ftp://ftp.sec.gov/' + link
                 dest = dir + '/forms'
                 out.write(path + '\n')
-
-

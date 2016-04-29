@@ -14,7 +14,7 @@ def extract(spark):
         cusips.add(line.replace('"','').strip())
 
     forms = spark.textFile('hdfs:///user/carrdp/FinanceML/13F/Q12015/links10.txt') \
-        .map(lambda link: getForm(link, cusips)) \
+        .foreachPartition(lambda link: getForm(link, cusips))
     
     num_investors = forms.flatMap(lambda vals: [(cusip, 1) for (cusip, amt) in vals]) \
         .reduceByKey(lambda x, y: x + y) \
@@ -26,12 +26,20 @@ def extract(spark):
         .map(lambda (cusip, ((c1, inv), (c2, shares))): (cusip, inv, shares, 1.0 * shares / inv)) \
         .saveAsTextFile('hdfs:///user/carrdp/FinanceML/13F/all_forms/testQ1/dir')
 
+    #TODO:  download market cap and p/e, and eventually open/close
+    #       make extensible to 1000+ forms (why isn't it)
+    #           Spark streaming?
+    #           foreachPartition?
+    #       change from S&P to XLK stocks
+
 
 def getForm(link, cusips):
+
     connection = urllib2.urlopen(link)
     file = connection.read()
     connection.close()
-
+    '''
+    '''
     soup = BeautifulSoup(file, "xml")
     
     data = []
@@ -40,11 +48,12 @@ def getForm(link, cusips):
         cusip = tag.cusip.string 
         type = tag.shrsOrPrnAmt.sshPrnamtType.string
         shares = tag.shrsOrPrnAmt.sshPrnamt.string
+
         if cusip in cusips and str(type) == "SH":
             data.append((str(cusip), int(shares)))
 
     return data
-    
+
 
 if __name__ == "__main__":
 
