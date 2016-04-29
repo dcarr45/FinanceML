@@ -20,16 +20,22 @@ def get_companies_from_tickers():
     mw = 'http://www.marketwatch.com/investing/stock/{ticker}'
     urls = [mw.format(ticker=t) for t in tickers]
 
-    f = open('companies.csv','w')
+    f = open('companies.csv','wb')
     writer = csv.writer(f)
 
     for url in urls:
-        content = get_content(url)
-        writer.writerows(content.split('<meta property="og:title" content="')[1].split('"')[0])
+        content = get_content(url) \
+            .split('<meta property="og:title" content="')[1] \
+            .split('"')[0]
+        writer.writerow([content])
     f.close()
 
 def loadCompanies():
-    return 0
+    f = open('companies.csv', 'r')
+    lines = f.readlines()
+    f.close()
+    return [line.strip() for line in lines]
+
 
 #(year, month, day)
 start = datetime.datetime(2000, 1, 1)
