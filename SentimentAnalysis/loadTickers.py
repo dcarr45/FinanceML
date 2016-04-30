@@ -3,6 +3,12 @@ import datetime
 import csv
 import requests
 import webbrowser
+import datetime
+
+#(year, month, day)
+START_DATE = datetime.datetime(2000, 1, 1)
+END_DATE = datetime.datetime(2016, 3, 20)
+
 
 def loadTickers():
     f = open('tickers.csv', 'r')
@@ -36,6 +42,9 @@ def loadCompanies():
     f.close()
     return [line.strip() for line in lines]
 
+def daterange(start_date, end_date):
+    for n in range(int ((end_date - start_date).days)):
+        yield start_date + datetime.timedelta(n)
 
 #(year, month, day)
 start = datetime.datetime(2000, 1, 1)
@@ -45,4 +54,7 @@ tickers = loadTickers()
 companies = loadCompanies()
 
 if __name__ == '__main__':
-    get_companies_from_tickers()
+    #get_companies_from_tickers()
+    for date in daterange(START_DATE,datetime.datetime(2000, 1, 20)):
+        month,day,year = date.month,date.day,date.year
+        if date.weekday() <5: print month, day, year
