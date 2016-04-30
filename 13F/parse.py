@@ -8,38 +8,34 @@ import urllib2
 import contextlib
 from bs4 import BeautifulSoup
 
+
 def extract(spark):
     cusips = set()
     for line in list(open('cusip.txt')):
-        cusips.add(line.replace('"','').strip())
+        cusips.add(line.replace('"', '').strip())
 
-    forms = spark.textFile('hdfs:///user/carrdp/FinanceML/13F/Q12015/links10.txt') \
-        .foreachPartition(lambda link: getForm(link, cusips))
+    forms = spark.textFile('hdfs:///user/carrdp/13F/*/*') \
+        .map(lambda link: parse(link, cusips).saveAsTextFile('hdfs:///user/carrdp/13F/parsed')
+        
+    forms.cache()
     
-    num_investors = forms.flatMap(lambda vals: [(cusip, 1) for (cusip, amt) in vals]) \
-        .reduceByKey(lambda x, y: x + y) \
-
+    num_investors = forms.flatMap(lambda vals: [(cusip, 1) for (cusip, amt) in vals]) \ 
+        .reduceByKey(lambda x, y: x + y)
+    
     num_shares = forms.flatMap(lambda vals: [(cusip, amt) for (cusip, amt) in vals]) \
-        .reduceByKey(lambda x, y: x + y) \
-
+        .reduceByKey(lambda x, y: x + y)
+    
     result = num_investors.keyBy(lambda (c, n): c).join(num_shares.keyBy(lambda (c1, n1): c1)) \
-        .map(lambda (cusip, ((c1, inv), (c2, shares))): (cusip, inv, shares, 1.0 * shares / inv)) \
-        .saveAsTextFile('hdfs:///user/carrdp/FinanceML/13F/all_forms/testQ1/dir')
-
+        .map(lambda (cusip, ((c1, inv), (c2, shares))): (cusip, inv, shares, 1.0 * shares / inv)) \ 
+        .saveAsTextFile('hdfs:///user/carrdp/13F/result')
+    
     #TODO:  download market cap and p/e, and eventually open/close
     #       make extensible to 1000+ forms (why isn't it)
     #           Spark streaming?
     #           foreachPartition?
     #       change from S&P to XLK stocks
-
-
-def getForm(link, cusips):
-
-    connection = urllib2.urlopen(link)
-    file = connection.read()
-    connection.close()
-    '''
-    '''
+    
+def parse(file, cusips):
     soup = BeautifulSoup(file, "xml")
     
     data = []
@@ -53,7 +49,6 @@ def getForm(link, cusips):
             data.append((str(cusip), int(shares)))
 
     return data
-
 
 if __name__ == "__main__":
 
