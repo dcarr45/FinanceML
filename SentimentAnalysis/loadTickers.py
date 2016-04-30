@@ -50,7 +50,7 @@ def loadPositive():
     """
     loading positive dictionary
     """
-    myfile = open('/LoughranMcDonald_Positive.csv', "r")
+    myfile = open('LoughranMcDonald_Positive.csv', "r")
     positives = myfile.readlines()
     positive = [pos.strip().lower() for pos in positives]
     return positive
@@ -60,7 +60,7 @@ def loadNegative():
     """
     loading negative dictionary
     """
-    myfile = open('/LoughranMcDonald_Negative.csv', "r")
+    myfile = open('LoughranMcDonald_Negative.csv', "r")
     negatives = myfile.readlines()
     negative = [neg.strip().lower() for neg in negatives]
     return negative
@@ -85,7 +85,7 @@ html_doc='''
 '''
 
 
-if __name__ == '__main__':
+#if __name__ == '__main__':
     #get_companies_from_tickers()
     # for date in daterange(START_DATE,datetime.datetime(2000, 1, 20)):
     #     month,day,year = date.month,date.day,date.year

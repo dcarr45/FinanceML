@@ -4,6 +4,8 @@ from bs4 import BeautifulSoup
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
 
+## TODO: fix issue with nltk.
+## imports do not work. throws ValueError: numpy.dtype has the wrong size, try recompiling
 
 search_terms = tickers+companies
 
@@ -39,6 +41,14 @@ def countNeg(cleantext, negative):
     return len(negs)
 
 
+def getSentiment(cleantext, negative, positive):
+    """
+    counts negative and positive words in cleantext and returns a score accordingly
+    """
+    positive = loadPositive()
+    negative = loadNegative()
+    return (countPos(cleantext, positive) - countNeg(cleantext, negative))
+
 
 
 #print get_url(query=tickers[0],month=1,day=1,year=2015)
@@ -63,13 +73,11 @@ link_titles = soup.find_all('a')
 #     print terms[term], term
 
 for line in [e.get_text() for e in descriptions+link_titles]:
-    for word in line.split():
-        if word in terms:
-            terms[word] += 1
-        else:
-            terms[word] = 1
-for term in terms:
-    print terms[term], term
+    ct = cleanText(line)
+    print countPos(ct, positive_words)
+    print countNeg(ct, negative_words)
+    print getSentiment(ct, negative_words, positive_words)
+
 
 # for link in soup.find_all('a'):
 #     print link.get_text()
