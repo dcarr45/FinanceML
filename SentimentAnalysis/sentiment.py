@@ -45,8 +45,6 @@ def getSentiment(cleantext, negative, positive):
     """
     counts negative and positive words in cleantext and returns a score accordingly
     """
-    positive = loadPositive()
-    negative = loadNegative()
     return (countPos(cleantext, positive) - countNeg(cleantext, negative))
 
 

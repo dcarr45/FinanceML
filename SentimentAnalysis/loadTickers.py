@@ -85,8 +85,9 @@ html_doc='''
 '''
 
 
-#if __name__ == '__main__':
+if __name__ == '__main__':
     #get_companies_from_tickers()
     # for date in daterange(START_DATE,datetime.datetime(2000, 1, 20)):
     #     month,day,year = date.month,date.day,date.year
     #     if date.weekday() <5: print month, day, year
+    print negative_words[:10]
