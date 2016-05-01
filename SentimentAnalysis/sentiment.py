@@ -45,6 +45,8 @@ def getSentiment(cleantext, negative, positive):
     """
     counts negative and positive words in cleantext and returns a score accordingly
     """
+    positive = loadPositive()
+    negative = loadNegative()
     return (countPos(cleantext, positive) - countNeg(cleantext, negative))
 
 
@@ -72,10 +74,10 @@ link_titles = soup.find_all('a')
 
 for line in [e.get_text() for e in descriptions+link_titles]:
     ct = cleanText(line)
-    print countPos(ct, positive_words)
-    print countNeg(ct, negative_words)
-    print getSentiment(ct, negative_words, positive_words)
-
+    cp = countPos(ct, positive_words)
+    cn =  countNeg(ct, negative_words)
+    sent = getSentiment(ct, negative_words, positive_words)
+    print sent, ct
 
 # for link in soup.find_all('a'):
 #     print link.get_text()
