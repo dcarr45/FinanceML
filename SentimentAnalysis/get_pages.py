@@ -52,9 +52,9 @@ def load_links__bak():
             write(filename, content)
             #print filename
 
-def calc_sentiments():
+def calc_sentiments__bak():
     # Date handling
-    f = open('features.csv','ab')
+    f = open('features.csv','wb')
     writer = csv.writer(f)
     writer.writerow(["date"]+search_terms)
     for date in daterange(datetime.datetime(2014,1,1),END_DATE):
@@ -74,29 +74,28 @@ def calc_sentiments():
             writer.writerow([file_dt(date)]+app)
     f.close()
 
-calc_sentiments()
-#print search_dt(1,1,2010)
+def store_jsons():
+    # Date handling
+    for date in daterange(START_DATE,END_DATE):
+        month,day,year = date.month,date.day,date.year
+        if day == 1:
+            #content = get_content(line[i])
+            content = line[i]
+            write(filename, content)
+            # monthly
+            month2 = 1 if month == 12 else month+1
+            year2 = year+1 if month == 12 else year
+            app = []
+            for term in terms:
+                fd = file_dt(date)[:7]
+                tkr = term.split()[0]
+                filename = "pages/"+fd+"/"+tkr+".json"
 
-# 20000101SPY.html
-# 20000101VIX.html
-# 20000101AAPL.html
-# 20000101MSFT.html
-# 20000101XOM.html
-# 20000101JNJ.html
-# 20000101GE.html
-# 20000101BRKB.html
-# 20000101AMZN.html
-# 20000101WFC.html
-# 20000101JPM.html
-# 20000101T.html
-# 20000101SPDR_SP_500_ETF_Trust.html
-# 20000101CBOE_Volatility_Index.html
-# 20000101Apple_Inc.html
-# 20000101Microsoft_Corp.html
-# 20000101Exxon_Mobil_Corp.html
-# 20000101Johnson__Johnson.html
-# 20000101General_Electric_Co.html
-# 20000101Berkshire_Hathaway_Inc_Cl_B.html
-# 20000101Amazoncom_Inc.html
-# 20000101Wells_Fargo__Co.html
-# 20000101JPMorgan_Chase__Co.html
+                d1 = search_dt(month,day,year)
+                d2 = search_dt(month2,day,year2)
+                params = param_maker(term,d1,d2)
+
+                r = requests.get(base+".json",params)
+                print params['begin_date'], params['fq']
+                parsed = json.loads(r.content)
+                write(filename, parsed)

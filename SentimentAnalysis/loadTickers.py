@@ -19,6 +19,12 @@ def loadTickers():
     #print tickers
     return tickers
 
+def loadTerms():
+    f = open('search_terms.csv', 'r')
+    lines = f.readlines()
+    f.close()
+    terms = lines[0].split(",")
+    return terms
 
 def get_content(url):
     response = requests.get(url)
@@ -95,6 +101,7 @@ def load_urls():
 start = datetime.datetime(2000, 1, 1)
 end = datetime.datetime(2016, 3, 20)
 
+terms = loadTerms()
 tickers = loadTickers()
 companies = loadCompanies()
 search_terms = tickers+companies
@@ -108,4 +115,5 @@ if __name__ == '__main__':
     #     month,day,year = date.month,date.day,date.year
     #     if date.weekday() <5: print month, day, year
     # print negative_words[:10]
-    load_urls()
+    print search_terms
+    print [term.split()[0] for term in terms]

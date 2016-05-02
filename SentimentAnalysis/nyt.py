@@ -27,6 +27,14 @@ def param_maker(query,date1,date2):
     ret['end_date'] = date2
     return ret
 
+# TODO combine company name and ticker in search with an OR condition.
+# store local copies of json responses
+# switch to these forms of sentiment for each search
+# polarity = (p - n)/(p + n)
+# subjectivity = (n + p_/N)
+# pos_refs_per_ref = p/N
+# neg_refs_per_ref = n/N
+# senti_diffs_per_ref = (p - n)/N
 
 def doc_sentiment(params):
     r = requests.get(base+".json",params)
@@ -54,5 +62,5 @@ def doc_sentiment(params):
 if __name__ == '__main__':
     #print payload
     #print doc_sentiment(param_maker("google",'20120101','20130101'))
-
-    print doc_sentiment(payload)
+    #print search_terms
+    print [term.split()[0] for term in doc_sentiment(payload)]
