@@ -81,7 +81,6 @@ def full_sentiment(data):
                     p = countPos(var)
                     n = countNeg(var)
                     N = len(cleanText(var))
-                    print var, p, n, N
                     ret['p']+=p
                     ret['n']+=n
                     ret['N']+=N

@@ -108,14 +108,50 @@ def store_jsons():
                 dump(filename, parsed)
 
 def make_features():
-    for dirpath, dirs, files in os.walk('pages'):
-        for filename in fnmatch.filter(files, '*.txt'):
-            with open(os.path.join(dirpath, filename)) as df:
-                data = json.load(df)
+    # for dirpath, dirs, files in os.walk('pages'):
+    #     for filename in fnmatch.filter(files, '*.txt'):
+    f = open('full_features.csv','wb')
+    writer = csv.writer(f)
+    feats = ['pol','subj','prpr','nrpr','sdpr']
+    full_terms = []
+    for term in terms:
+        for feat in feats:
+            full_terms.append(term+"_"+feat)
+    writer.writerow(["Date"]+full_terms)
+    for date in daterange(datetime.datetime(2016,1,1),END_DATE):
+        month,day,year = date.month,date.day,date.year
+        if day == 1:
+            # monthly
+            month2 = 1 if month == 12 else month+1
+            year2 = year+1 if month == 12 else year
+            app = []
+            for term in terms:
+                fd = file_dt(date)[:7]
+                tkr = term.split()[0]
+                filename = "pages/"+fd+"/"+tkr+".txt"
+                with open(filename) as df:
+                    data = json.load(df)
+                    sent = full_sentiment(data)
+                    p = sent['p']
+                    n = sent['n']
+                    N = sent['N']
+                    polarity = (p - n)/(p + n)
+                    subjectivity = (n + p)/N)
+                    pos_refs_per_ref = p/N
+                    neg_refs_per_ref = n/N
+                    senti_diffs_per_ref = (p - n)/N
+                    app.extend([polarity, subjectivity,
+                        pos_refs_per_ref, neg_refs_per_ref,
+                        senti_diffs_per_ref])
+            print app
+            writer.writerow([file_dt(date)]+app)
+    f.close()
+
+# polarity = (p - n)/(p + n)
+# subjectivity = (n + p)/N)
+# pos_refs_per_ref = p/N
+# neg_refs_per_ref = n/N
+# senti_diffs_per_ref = (p - n)/N
 
 if __name__ == '__main__':
-    #make_features()
-    path = 'pages/2016/01/GE.txt'
-    with open(path) as df:
-        data = json.load(df)
-        print full_sentiment(data)
+    make_features()
