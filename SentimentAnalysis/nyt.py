@@ -20,6 +20,14 @@ params = {
 'api-key':API_KEY
 }
 
+def param_maker(query,date1,date2):
+    ret = {'fl':field_list,'api-key':API_KEY}
+    ret['fq'] = query
+    ret['begin_date'] = date1
+    ret['end_date'] = date2
+    return ret
+
+
 def doc_sentiment(params):
     r = requests.get(base+".json",params)
     parsed = json.loads(r.content)
@@ -39,29 +47,6 @@ def doc_sentiment(params):
                 sentiment+= getSentiment(var)
         ret+=sentiment
     return ret
-
-
-
-# lead_paragraph = doc["lead_paragraph"]
-# headline = doc["headline"]
-# abstract = doc["abstract"]
-# snippet = doc["snippet"]
-# keywords = doc["keywords"]
-
-
-#
-# docs
-# facets
-# meta
-
-# lead_paragraph
-# headline
-# abstract
-# snippet
-# keywords
-
-# var = "[{u'value': u'Dictionaries', u'is_major': u'Y', u'rank': u'1', u'name': u'subject'}, {u'value': u'McKean, Erin', u'is_major': u'N', u'rank': u'2', u'name': u'persons'}, {u'value': u'Computers and the Internet', u'is_major': u'N', u'rank': u'3', u'name': u'subject'}, {u'value': u'English Language', u'is_major': u'N', u'rank': u'4', u'name': u'subject'}]"
-# print " ".join(var.split("'")[1::2])
 
 if __name__ == '__main__':
     print doc_sentiment(params)

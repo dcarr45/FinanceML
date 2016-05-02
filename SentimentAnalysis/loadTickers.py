@@ -4,7 +4,7 @@ import csv
 import requests
 import webbrowser
 import datetime
-from googlenews import goog_url, fmt
+#from googlenews import goog_url, fmt
 
 #(year, month, day)
 START_DATE = datetime.datetime(2000, 1, 1)
