@@ -1,6 +1,6 @@
 import json
 import requests
-from sentiment import getSentiment, countPos, countNeg
+#from sentiment import getSentiment, countPos, countNeg
 from loadTickers import positive_words, negative_words
 
 
@@ -24,48 +24,23 @@ print r2.url
 parsed = json.loads(r2.content)
 resp = parsed['response']
 doc = resp['docs'][1]
-# for p in doc:
-#     print p, ":",resp['docs'][1][p]
+for p in doc:
+    print p
+    var = doc[p]
+    if p == "headline" || p == "keywords":
+        var = " ".join(var.split("'")[1::2])
+    print "countNeg", countNeg(var,negative_words)
+    print "countPos", countPos(var,positive_words)
+    print "sentiment", getSentiment(var,negative_words,positive_words)
+
+
 lead_paragraph = doc["lead_paragraph"]
 headline = doc["headline"]
 abstract = doc["abstract"]
 snippet = doc["snippet"]
-keywords = doc["keywords"]
-print
-print "lead_paragraph"
-ct = lead_paragraph
-cp = countPos(ct, positive_words)
-cn =  countNeg(ct, negative_words)
-sent = getSentiment(ct, negative_words, positive_words)
-print cp, cn, ct
-print
-print "headline"
-ct = headline
-cp = countPos(ct, positive_words)
-cn =  countNeg(ct, negative_words)
-sent = getSentiment(ct, negative_words, positive_words)
-print cp, cn, ct
-print
-print "abstract"
-ct = abstract
-cp = countPos(ct, positive_words)
-cn =  countNeg(ct, negative_words)
-sent = getSentiment(ct, negative_words, positive_words)
-print cp, cn, ct
-print
-print "snippet"
-ct = snippet
-cp = countPos(ct, positive_words)
-cn =  countNeg(ct, negative_words)
-sent = getSentiment(ct, negative_words, positive_words)
-print cp, cn, ct
-print
-print "keywords"
-ct = keywords
-cp = countPos(ct, positive_words)
-cn =  countNeg(ct, negative_words)
-sent = getSentiment(ct, negative_words, positive_words)
-print cp, cn, ct
+# keywords = doc["keywords"]
+
+
 #
 # docs
 # facets
@@ -77,34 +52,5 @@ print cp, cn, ct
 # snippet
 # keywords
 
-print countPos("good happy", positive_words)
-
-ct = lead_paragraph
-
-
-
-
-
-
-ct = headline
-
-
-
-
-
-
-ct = abstract
-
-
-
-
-
-
-ct = snippet
-
-
-
-
-
-
-ct = keywords
+# var = "[{u'value': u'Dictionaries', u'is_major': u'Y', u'rank': u'1', u'name': u'subject'}, {u'value': u'McKean, Erin', u'is_major': u'N', u'rank': u'2', u'name': u'persons'}, {u'value': u'Computers and the Internet', u'is_major': u'N', u'rank': u'3', u'name': u'subject'}, {u'value': u'English Language', u'is_major': u'N', u'rank': u'4', u'name': u'subject'}]"
+# print " ".join(var.split("'")[1::2])
