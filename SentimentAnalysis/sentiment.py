@@ -1,5 +1,5 @@
 from loadTickers import *
-from googlenews import *
+from googlenews import goog_url, fmt
 from bs4 import BeautifulSoup
 from nltk.tokenize import RegexpTokenizer
 from nltk.corpus import stopwords
@@ -7,7 +7,6 @@ from nltk.corpus import stopwords
 ## TODO: fix issue with nltk.
 ## imports do not work. throws ValueError: numpy.dtype has the wrong size, try recompiling
 
-search_terms = tickers+companies
 
 def cleanText(text):
     """
@@ -29,6 +28,7 @@ def countPos(cleantext, positive):
     """
     counts positive words in cleantext
     """
+    cleanText = cleanText(cleantext)
     pos = [word for word in cleantext if word in positive]
     return len(pos)
 
@@ -45,22 +45,14 @@ def getSentiment(cleantext, negative, positive):
     """
     counts negative and positive words in cleantext and returns a score accordingly
     """
-    positive = loadPositive()
-    negative = loadNegative()
     return (countPos(cleantext, positive) - countNeg(cleantext, negative))
 
 
-
-#print get_url(query=tickers[0],month=1,day=1,year=2015)
-URLS = [goog_url(query=term,month=1,day=1,year=2015) for term in search_terms]
-# print get_content(URLS[0])
-
-#html_doc = get_content('https://www.google.com/#hl=en&gl=us&tbm=nws&authuser=0&q=facebook')
-soup = BeautifulSoup(html_doc, 'html.parser')
-
-#print soup.prettify()
-descriptions = soup.find_all('div', class_="st")
-link_titles = soup.find_all('a')
+# soup = BeautifulSoup(html_doc, 'html.parser')
+#
+# #print soup.prettify()
+# descriptions = soup.find_all('div', class_="st")
+# link_titles = soup.find_all('a')
 
 # terms = {}
 # for line in [e.get_text() for e in descriptions+link_titles]:
@@ -72,12 +64,12 @@ link_titles = soup.find_all('a')
 # for term in terms:
 #     print terms[term], term
 
-for line in [e.get_text() for e in descriptions+link_titles]:
-    ct = cleanText(line)
-    cp = countPos(ct, positive_words)
-    cn =  countNeg(ct, negative_words)
-    sent = getSentiment(ct, negative_words, positive_words)
-    print sent, ct
+# for line in [e.get_text() for e in descriptions+link_titles]:
+#     ct = cleanText(line)
+#     cp = countPos(ct, positive_words)
+#     cn =  countNeg(ct, negative_words)
+#     sent = getSentiment(ct, negative_words, positive_words)
+#     print sent, ct
 
 # for link in soup.find_all('a'):
 #     print link.get_text()
@@ -92,21 +84,14 @@ for line in [e.get_text() for e in descriptions+link_titles]:
 
 # print search_terms
 
-URLS = []
-def date_fun():
-    f = open('urls.csv','wb')
-    writer = csv.writer(f)
-    writer.writerow(["date"]+search_terms)
-    # Date handling
-    for date in daterange(START_DATE,END_DATE):
-        month,day,year = date.month,date.day,date.year
-        #if date.weekday() < 5: # is a weekday
-        app = []
-        for term in search_terms:
-            url = goog_url(query=term,month=month,day=day,year=year)
-            # content = get_content(url)
-            # perform sentiment analysis on content
-            app.append(url)
-            #URLS.append(url)
-        writer.writerow([date]+app)
-    f.close()
+# 1/1/2000 - 2/1/20000
+# 2
+# 3
+# 4
+# 5
+# 6
+# 7
+# 8
+# 9
+# 10
+# 11 - 12
