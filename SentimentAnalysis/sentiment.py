@@ -28,7 +28,7 @@ def countPos(cleantext):
     """
     counts positive words in cleantext
     """
-    if type(cleantext) == type("str"):
+    if type(cleantext) != type(cleanText("str")):
         cleantext = cleanText(cleantext)
     pos = [word for word in cleantext if word in positive_words]
     return len(pos)
@@ -38,7 +38,7 @@ def countNeg(cleantext):
     """
     counts negative words in cleantext
     """
-    if type(cleantext) == type("str"):
+    if type(cleantext) != type(cleanText("str")):
         cleantext = cleanText(cleantext)
     negs = [word for word in cleantext if word in negative_words]
     return len(negs)

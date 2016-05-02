@@ -65,12 +65,11 @@ def doc_sentiment(params,data):
 
 def full_sentiment(data):
     ret = {'p':0,'n':0,'N':0}
-    status = parsed['status']
+    status = data['status']
     if status == "OK":
-        resp = parsed['response']
+        resp = data['response']
         docs = resp['docs']
         for doc in docs:
-            p,n,N = 0,0,0
             for page in doc:
                 var = doc[page]
                 if var is not None:
@@ -79,9 +78,10 @@ def full_sentiment(data):
                     if page == "keywords":
                         var = [e['value'] for e in var]
                         var = " ".join(var)
-                    p += countPos(var)
-                    n += countNeg(var)
-                    N += len(cleanText(var))
+                    p = countPos(var)
+                    n = countNeg(var)
+                    N = len(cleanText(var))
+                    print var, p, n, N
                     ret['p']+=p
                     ret['n']+=n
                     ret['N']+=N

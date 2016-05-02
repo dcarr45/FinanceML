@@ -115,7 +115,7 @@ def make_features():
 
 if __name__ == '__main__':
     #make_features()
-    path = 'pages/2000/01/AAPL.txt'
+    path = 'pages/2016/01/GE.txt'
     with open(path) as df:
         data = json.load(df)
         print full_sentiment(data)
