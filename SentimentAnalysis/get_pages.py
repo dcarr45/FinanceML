@@ -1,7 +1,7 @@
 #from sentiment import *
-import os, csv
+import os, json, csv
 from loadTickers import *
-from nyt import param_maker, doc_sentiment
+from nyt import param_maker, get_json, doc_sentiment
 
 def repl(txt):
     return txt.replace(" ", "_") \
@@ -26,6 +26,7 @@ def search_dt(month,day,year):
     if d: day = "0"+day
     return year+""+month+""+day
 
+
 def write(filename, message):
     if not os.path.exists(os.path.dirname(filename)):
         try:
@@ -35,6 +36,16 @@ def write(filename, message):
                 raise
     with open(filename, "w") as f:
         f.write(message)
+
+def dump(filename, data):
+    if not os.path.exists(os.path.dirname(filename)):
+        try:
+            os.makedirs(os.path.dirname(filename))
+        except OSError as exc: # Guard against race condition
+            if exc.errno != errno.EEXIST:
+                raise
+    with open(filename, "w") as f:
+        json.dump(data,f)
 
 
 def load_links__bak():
@@ -79,9 +90,6 @@ def store_jsons():
     for date in daterange(START_DATE,END_DATE):
         month,day,year = date.month,date.day,date.year
         if day == 1:
-            #content = get_content(line[i])
-            content = line[i]
-            write(filename, content)
             # monthly
             month2 = 1 if month == 12 else month+1
             year2 = year+1 if month == 12 else year
@@ -89,13 +97,16 @@ def store_jsons():
             for term in terms:
                 fd = file_dt(date)[:7]
                 tkr = term.split()[0]
-                filename = "pages/"+fd+"/"+tkr+".json"
+                filename = "pages/"+fd+"/"+tkr+".txt"
 
                 d1 = search_dt(month,day,year)
                 d2 = search_dt(month2,day,year2)
                 params = param_maker(term,d1,d2)
 
-                r = requests.get(base+".json",params)
                 print params['begin_date'], params['fq']
-                parsed = json.loads(r.content)
-                write(filename, parsed)
+                parsed = get_json(params)
+                dump(filename, parsed)
+
+
+if __name__ == '__main__':
+    store_jsons()    

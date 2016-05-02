@@ -17,7 +17,7 @@ payload = {
 'end_date':'20130101',
 #'news_desk' : blah,
 'fl':field_list,
-'api-key':API_KEY
+'api-key':API_KEY2
 }
 
 def param_maker(query,date1,date2):
@@ -35,11 +35,14 @@ def param_maker(query,date1,date2):
 # pos_refs_per_ref = p/N
 # neg_refs_per_ref = n/N
 # senti_diffs_per_ref = (p - n)/N
+def get_json(params):
+    r = requests.get(base+".json",params)
+    parsed = json.loads(r.content)
+    return parsed
 
 def doc_sentiment(params):
-    r = requests.get(base+".json",params)
     print params['begin_date'], params['fq']
-    parsed = json.loads(r.content)
+    parsed = get_json(params)
     ret = 0
     status = parsed['status']
     if status == "OK":
@@ -63,4 +66,5 @@ if __name__ == '__main__':
     #print payload
     #print doc_sentiment(param_maker("google",'20120101','20130101'))
     #print search_terms
-    print [term.split()[0] for term in doc_sentiment(payload)]
+    print get_json(payload)
+    #print [term.split()[0] for term in doc_sentiment(payload)]
