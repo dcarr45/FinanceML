@@ -54,12 +54,10 @@ def load_links__bak():
 
 def calc_sentiments():
     # Date handling
-    inf = open('features.csv')
-    liness = inf.readlines()
-    f = open('features.csv','wb')
+    f = open('features.csv','ab')
     writer = csv.writer(f)
     writer.writerow(["date"]+search_terms)
-    for date in daterange(START_DATE,END_DATE):
+    for date in daterange(datetime.datetime(2014,1,1),END_DATE):
         month,day,year = date.month,date.day,date.year
         if day == 1:
             # monthly
