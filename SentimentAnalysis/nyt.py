@@ -1,6 +1,6 @@
 import json
 import requests
-from sentiment import getSentiment, countPos, countNeg
+from sentiment import getSentiment, countPos, countNeg, cleanText
 from loadTickers import positive_words, negative_words
 
 
@@ -23,26 +23,22 @@ r2 = requests.get(base+".json",params)
 print r2.url
 parsed = json.loads(r2.content)
 resp = parsed['response']
-doc = resp['docs'][0]
-#for p in doc:
-#    print 
-#    print p
-#    var = doc[p]
-#    if p == "headline":
-#        var = var['main']
-#    if p == "keywords":
-#        var = [e['value'] for e in var]
-#        var = " ".join(var)
-#    print "countNeg", countNeg(var,negative_words)
-#    print "countPos", countPos(var,positive_words)
-#    print "sentiment", getSentiment(var,negative_words,positive_words)
-phrase = "bad dropped fail unsuccessfully good"
-
-print phrase
-print countNeg(phrase)
-print countPos(phrase)
-print getSentiment(phrase)
-
+docs = resp['docs']
+for doc in docs: 
+    for p in doc:
+        print 
+        print p
+        var = doc[p]
+        if p == "headline":
+            var = var['main']
+        if p == "keywords":
+            var = [e['value'] for e in var]
+            var = " ".join(var)
+        print cleanText(var)
+        print "countNeg", countNeg(var)
+        print "countPos", countPos(var)
+        print "sentiment", getSentiment(var)
+    print "############"
 
 lead_paragraph = doc["lead_paragraph"]
 headline = doc["headline"]
