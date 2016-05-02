@@ -1,16 +1,52 @@
 from loadTickers import *
-from googlenews import *
+from googlenews import goog_url, fmt
+from bs4 import BeautifulSoup
+from nltk.tokenize import RegexpTokenizer
+from nltk.corpus import stopwords
 
-#(year, month, day)
+## TODO: fix issue with nltk.
+## imports do not work. throws ValueError: numpy.dtype has the wrong size, try recompiling
 
-search_terms = tickers+companies
 
-#print get_url(query=tickers[0],month=1,day=1,year=2015)
-URLS = [goog_url(query=term,month=1,day=1,year=2015) for term in search_terms]
+def cleanText(text):
+    """
+    removes punctuation, stopwords and returns lowercase text in a list of single words
+    """
+    text = text.lower()
 
-print get_content(URLS[0])
+    text = BeautifulSoup(text, 'html.parser').get_text()
 
-# for url in URLS:
-#     print get_content(url)
+    tokenizer = RegexpTokenizer(r'\w+')
+    text = tokenizer.tokenize(text)
 
-print search_terms
+    clean = [word for word in text if word not in stopwords.words('english')]
+
+    return clean
+
+
+def countPos(cleantext):
+    """
+    counts positive words in cleantext
+    """
+    if type(cleantext) != type(cleanText("str")):
+        cleantext = cleanText(cleantext)
+    pos = [word for word in cleantext if word in positive_words]
+    return len(pos)
+
+
+def countNeg(cleantext):
+    """
+    counts negative words in cleantext
+    """
+    if type(cleantext) != type(cleanText("str")):
+        cleantext = cleanText(cleantext)
+    negs = [word for word in cleantext if word in negative_words]
+    return len(negs)
+
+
+def getSentiment(text):
+    """
+    counts negative and positive words in cleantext and returns a score accordingly
+    """
+    cleantext = cleanText(text)
+    return (countPos(cleantext) - countNeg(cleantext))
