@@ -54,6 +54,8 @@ def load_links__bak():
 
 def calc_sentiments():
     # Date handling
+    inf = open('features.csv')
+    liness = inf.readlines()
     f = open('features.csv','wb')
     writer = csv.writer(f)
     writer.writerow(["date"]+search_terms)
