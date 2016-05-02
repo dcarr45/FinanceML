@@ -68,6 +68,9 @@ def volCalc(ticker, prices, lagTime):
         writer = csv.writer(f)
         writer.writerows(vol)
 
+def addTimeLag():
+
+
 def percentChange(p0,p1):
     p0 = float(p0)
     p1 = float(p1)
