@@ -10,15 +10,20 @@ def repl(txt):
 
 
 def file_dt(date):
-    month,day,year = date.month,date.day,date.year
-    if month<10: month = "0"+month
-    if day<10: day = "0"+day
+    month,day,year=date.month,date.day,date.year
+    m = month<10
+    d = day<10
+    month,day,year = str(month),str(day),str(year)
+    if m: month = "0"+month
+    if d: day = "0"+day
     return year+"/"+month+"/"+day
 
 def search_dt(month,day,year):
+    m = month<10
+    d = day<10
     month,day,year = str(month),str(day),str(year)
-    if month<10: month = "0"+month
-    if day<10: day = "0"+day
+    if m: month = "0"+month
+    if d: day = "0"+day
     return year+""+month+""+day
 
 def write(filename, message):
@@ -57,19 +62,20 @@ def calc_sentiments():
         if day == 1:
             # monthly
             month2 = 1 if month == 12 else month+1
-            year = year if month2 == month else year+1
+            year2 = year+1 if month == 12 else year
             app = []
             for term in search_terms:
                 # perform sentiment analysis on content
                 d1 = search_dt(month,day,year)
-                d2 = search_dt(month2,day,year)
+                d2 = search_dt(month2,day,year2)
                 params = param_maker(term,d1,d2)
                 app.append(doc_sentiment(params))
-        writer.writerow([date]+app)
+            print app
+            writer.writerow([file_dt(date)]+app)
     f.close()
 
 calc_sentiments()
-
+#print search_dt(1,1,2010)
 
 # 20000101SPY.html
 # 20000101VIX.html

@@ -1,4 +1,4 @@
-import json
+import json, sys
 import requests
 from sentiment import getSentiment, countPos, countNeg, cleanText
 from loadTickers import positive_words, negative_words
@@ -30,10 +30,10 @@ def param_maker(query,date1,date2):
 
 def doc_sentiment(params):
     r = requests.get(base+".json",params)
+    print params['begin_date'], params['fq']
     parsed = json.loads(r.content)
     ret = 0
     status = parsed['status']
-    print status
     if status == "OK":
         resp = parsed['response']
         docs = resp['docs']
@@ -52,4 +52,7 @@ def doc_sentiment(params):
     return ret
 
 if __name__ == '__main__':
+    #print payload
+    #print doc_sentiment(param_maker("google",'20120101','20130101'))
+    
     print doc_sentiment(payload)
