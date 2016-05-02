@@ -1,6 +1,6 @@
 import json
 import requests
-#from sentiment import getSentiment, countPos, countNeg
+from sentiment import getSentiment, countPos, countNeg
 from loadTickers import positive_words, negative_words
 
 
@@ -23,12 +23,16 @@ r2 = requests.get(base+".json",params)
 print r2.url
 parsed = json.loads(r2.content)
 resp = parsed['response']
-doc = resp['docs'][1]
+doc = resp['docs'][0]
 for p in doc:
+    print 
     print p
     var = doc[p]
-    if p == "headline" || p == "keywords":
-        var = " ".join(var.split("'")[1::2])
+    if p == "headline":
+        var = var['main']
+    if p == "keywords":
+        var = [e['value'] for e in var]
+        var = " ".join(var)
     print "countNeg", countNeg(var,negative_words)
     print "countPos", countPos(var,positive_words)
     print "sentiment", getSentiment(var,negative_words,positive_words)
