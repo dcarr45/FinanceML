@@ -27,20 +27,13 @@ def param_maker(query,date1,date2):
     ret['end_date'] = date2
     return ret
 
-# TODO combine company name and ticker in search with an OR condition.
-# store local copies of json responses
-# switch to these forms of sentiment for each search
-# polarity = (p - n)/(p + n)
-# subjectivity = (n + p_/N)
-# pos_refs_per_ref = p/N
-# neg_refs_per_ref = n/N
-# senti_diffs_per_ref = (p - n)/N
+
 def get_json(params):
     r = requests.get(base+".json",params)
     parsed = json.loads(r.content)
     return parsed
 
-def doc_sentiment(params):
+def doc_sentiment(params,data):
     print params['begin_date'], params['fq']
     parsed = get_json(params)
     ret = 0
@@ -60,6 +53,38 @@ def doc_sentiment(params):
                         var = " ".join(var)
                     sentiment+= getSentiment(var)
             ret+=sentiment
+    return ret
+
+# TODO
+# switch to these forms of sentiment for each search
+# polarity = (p - n)/(p + n)
+# subjectivity = (n + p_/N)
+# pos_refs_per_ref = p/N
+# neg_refs_per_ref = n/N
+# senti_diffs_per_ref = (p - n)/N
+
+def full_sentiment(data):
+    ret = {'p':0,'n':0,'N':0}
+    status = parsed['status']
+    if status == "OK":
+        resp = parsed['response']
+        docs = resp['docs']
+        for doc in docs:
+            p,n,N = 0,0,0
+            for page in doc:
+                var = doc[page]
+                if var is not None:
+                    if page == "headline":
+                        var = var['main']
+                    if page == "keywords":
+                        var = [e['value'] for e in var]
+                        var = " ".join(var)
+                    p += countPos(var)
+                    n += countNeg(var)
+                    N += len(cleanText(var))
+                    ret['p']+=p
+                    ret['n']+=n
+                    ret['N']+=N
     return ret
 
 if __name__ == '__main__':

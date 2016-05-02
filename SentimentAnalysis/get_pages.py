@@ -1,7 +1,7 @@
 #from sentiment import *
-import os, json, csv
+import os, json, csv, fnmatch
 from loadTickers import *
-from nyt import param_maker, get_json, doc_sentiment
+from nyt import param_maker, get_json, doc_sentiment, full_sentiment
 
 def repl(txt):
     return txt.replace(" ", "_") \
@@ -107,6 +107,15 @@ def store_jsons():
                 parsed = get_json(params)
                 dump(filename, parsed)
 
+def make_features():
+    for dirpath, dirs, files in os.walk('pages'):
+        for filename in fnmatch.filter(files, '*.txt'):
+            with open(os.path.join(dirpath, filename)) as df:
+                data = json.load(df)
 
 if __name__ == '__main__':
-    store_jsons()    
+    #make_features()
+    path = 'pages/2000/01/AAPL.txt'
+    with open(path) as df:
+        data = json.load(df)
+        print full_sentiment(data)
