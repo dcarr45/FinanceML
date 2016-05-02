@@ -20,25 +20,23 @@ params = {
 'api-key':API_KEY
 }
 
-def sentiment(params):
+def doc_sentiment(params):
     r = requests.get(base+".json",params)
-    parsed = json.loads(r2.content)
+    parsed = json.loads(r.content)
     resp = parsed['response']
     docs = resp['docs']
     ret = 0
     for doc in docs:
         sentiment = 0
         for p in doc:
-            print
-            print p
             var = doc[p]
-            if p == "headline":
-                var = var['main']
-            if p == "keywords":
-                var = [e['value'] for e in var]
-                var = " ".join(var)
-            print cleanText(var)
-            sentiment+= getSentiment(var)
+            if var is not None:
+                if p == "headline":
+                    var = var['main']
+                if p == "keywords":
+                    var = [e['value'] for e in var]
+                    var = " ".join(var)
+                sentiment+= getSentiment(var)
         ret+=sentiment
     return ret
 
@@ -66,4 +64,4 @@ def sentiment(params):
 # print " ".join(var.split("'")[1::2])
 
 if __name__ == '__main__':
-    sentiment(params)
+    print doc_sentiment(params)
