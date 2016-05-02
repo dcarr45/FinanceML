@@ -5,7 +5,7 @@ from loadTickers import positive_words, negative_words
 
 
 # NYT API vars
-APPLICATION = "SentimentML"
+API_KEY2 = "0fa21861234316c4385d19dfbf33b873:8:73701170"
 API_KEY = "46ad1d95c0f01e124f481eba9d6771d2:10:73701170"
 base = "http://api.nytimes.com/svc/search/v2/articlesearch"
 
@@ -21,7 +21,7 @@ payload = {
 }
 
 def param_maker(query,date1,date2):
-    ret = {'fl':field_list,'api-key':API_KEY}
+    ret = {'fl':field_list,'api-key':API_KEY2}
     ret['fq'] = query
     ret['begin_date'] = date1
     ret['end_date'] = date2
@@ -54,5 +54,5 @@ def doc_sentiment(params):
 if __name__ == '__main__':
     #print payload
     #print doc_sentiment(param_maker("google",'20120101','20130101'))
-    
+
     print doc_sentiment(payload)
