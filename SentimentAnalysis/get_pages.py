@@ -1,6 +1,6 @@
 #from sentiment import *
-import os
-from loadTickers import get_content
+import os, csv
+from loadTickers import *
 from nyt import param_maker, doc_sentiment
 
 def repl(txt):
