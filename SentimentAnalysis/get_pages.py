@@ -116,9 +116,9 @@ def make_features():
     full_terms = []
     for term in terms:
         for feat in feats:
-            full_terms.append(term+"_"+feat)
+            full_terms.append(term.split()[0]+"_"+feat)
     writer.writerow(["Date"]+full_terms)
-    for date in daterange(datetime.datetime(2016,1,1),END_DATE):
+    for date in daterange(START_DATE,END_DATE):
         month,day,year = date.month,date.day,date.year
         if day == 1:
             # monthly
@@ -129,14 +129,15 @@ def make_features():
                 fd = file_dt(date)[:7]
                 tkr = term.split()[0]
                 filename = "pages/"+fd+"/"+tkr+".txt"
+                print fd, tkr
                 with open(filename) as df:
                     data = json.load(df)
                     sent = full_sentiment(data)
-                    p = sent['p']
-                    n = sent['n']
+                    p = float(sent['p'])
+                    n = float(sent['n'])
                     N = sent['N']
                     polarity = (p - n)/(p + n)
-                    subjectivity = (n + p)/N)
+                    subjectivity = (n + p)/N
                     pos_refs_per_ref = p/N
                     neg_refs_per_ref = n/N
                     senti_diffs_per_ref = (p - n)/N
