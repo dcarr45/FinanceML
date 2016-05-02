@@ -1,6 +1,7 @@
 #from sentiment import *
 import os
 from loadTickers import get_content
+from nyt import param_maker, doc_sentiment
 
 def repl(txt):
     return txt.replace(" ", "_") \
@@ -8,9 +9,17 @@ def repl(txt):
         .replace("&","")
 
 
-def dt(txt):
-    return txt[:7].replace("-","/")
+def file_dt(date):
+    month,day,year = date.month,date.day,date.year
+    if month<10: month = "0"+month
+    if day<10: day = "0"+day
+    return year+"/"+month+"/"+day
 
+def search_dt(month,day,year):
+    month,day,year = str(month),str(day),str(year)
+    if month<10: month = "0"+month
+    if day<10: day = "0"+day
+    return year+""+month+""+day
 
 def write(filename, message):
     if not os.path.exists(os.path.dirname(filename)):
@@ -23,7 +32,7 @@ def write(filename, message):
         f.write(message)
 
 
-def load_links():
+def load_links__bak():
     urls = open('urls.csv','r')
     urls = [e.split(',') for e in urls]
     header = urls[0][:-1]
@@ -38,7 +47,28 @@ def load_links():
             write(filename, content)
             #print filename
 
-load_links()
+def calc_sentiments():
+    # Date handling
+    f = open('features.csv','wb')
+    writer = csv.writer(f)
+    writer.writerow(["date"]+search_terms)
+    for date in daterange(START_DATE,END_DATE):
+        month,day,year = date.month,date.day,date.year
+        if day == 1:
+            # monthly
+            month2 = 1 if month == 12 else month+1
+            year = year if month2 == month else year+1
+            app = []
+            for term in search_terms:
+                # perform sentiment analysis on content
+                d1 = search_dt(month,day,year)
+                d2 = search_dt(month2,day,year)
+                params = param_maker(term,d1,d2)
+                app.append(doc_sentiment(params))
+        writer.writerow([date]+app)
+    f.close()
+
+calc_sentiments()
 
 
 # 20000101SPY.html
