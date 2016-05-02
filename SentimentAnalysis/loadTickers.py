@@ -7,7 +7,7 @@ import datetime
 #from googlenews import goog_url, fmt
 
 #(year, month, day)
-START_DATE = datetime.datetime(2000, 1, 1)
+START_DATE = datetime.datetime(2015, 1, 1)
 END_DATE = datetime.datetime(2016, 3, 20)
 
 

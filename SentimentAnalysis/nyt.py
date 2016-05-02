@@ -32,7 +32,9 @@ def doc_sentiment(params):
     r = requests.get(base+".json",params)
     parsed = json.loads(r.content)
     ret = 0
-    if parsed['status'] == "OK":
+    status = parsed['status']
+    print status
+    if status == "OK":
         resp = parsed['response']
         docs = resp['docs']
         for doc in docs:
