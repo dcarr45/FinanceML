@@ -14,7 +14,7 @@ def cleanText(text):
     """
     text = text.lower()
 
-    text = BeautifulSoup(text).get_text()
+    text = BeautifulSoup(text, 'html.parser').get_text()
 
     tokenizer = RegexpTokenizer(r'\w+')
     text = tokenizer.tokenize(text)
@@ -24,28 +24,32 @@ def cleanText(text):
     return clean
 
 
-def countPos(cleantext, positive):
+def countPos(cleantext):
     """
     counts positive words in cleantext
     """
-    cleanText = cleanText(cleantext)
-    pos = [word for word in cleantext if word in positive]
+    if type(cleantext) == type("str"):
+        cleantext = cleanText(cleantext)
+    pos = [word for word in cleantext if word in positive_words]
     return len(pos)
 
 
-def countNeg(cleantext, negative):
+def countNeg(cleantext):
     """
     counts negative words in cleantext
-    """
-    negs = [word for word in cleantext if word in negative]
+    """ 
+    if type(cleantext) == type("str"):
+        cleantext = cleanText(cleantext)
+    negs = [word for word in cleantext if word in negative_words]
     return len(negs)
 
 
-def getSentiment(cleantext, negative, positive):
+def getSentiment(text):
     """
     counts negative and positive words in cleantext and returns a score accordingly
     """
-    return (countPos(cleantext, positive) - countNeg(cleantext, negative))
+    cleantext = cleanText(text)
+    return (countPos(cleantext) - countNeg(cleantext))
 
 
 # soup = BeautifulSoup(html_doc, 'html.parser')
