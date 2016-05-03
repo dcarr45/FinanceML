@@ -21,7 +21,7 @@ TIME_HORIZON = 30
 def loadData():
 
     data_df = pd.DataFrame.from_csv('feature_matrix.csv')
-    print data_df[-5:]
+    # print data_df[-5:]
 
     #load feature headers
     filename = 'features.csv'
@@ -69,10 +69,14 @@ def test_classifier(clf, X, Y):
 def main():
 
     X, baseline, Y = loadData()
-    
+
     print type(X)
     print type(baseline)
     print type(Y)
+
+    print X.size
+    print baseline.size
+    print Y.size
 
     print type(X[0])
     print type(baseline[0])
