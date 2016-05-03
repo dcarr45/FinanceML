@@ -67,18 +67,20 @@ def main():
 
     X, Y = loadData()
 
-    clf = linear_model.SGDClassifier(loss='log')
-    test_classifier(clf, X, Y)
+    print X
 
-    clf = GaussianNB()
-    test_classifier(clf, X, Y)
+    # clf = linear_model.SGDClassifier(loss='log')
+    # test_classifier(clf, X, Y)
+    #
+    # clf = GaussianNB()
+    # test_classifier(clf, X, Y)
+    #
+    # clf = RandomForestClassifier(n_estimators=10, max_depth=10)
+    # test_classifier(clf, X, Y)
+    #
+    # clf = svm.SVC(kernel="linear", C=1.0, probability = True)
+    # test_classifier(clf, X, Y)
 
-    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
-    test_classifier(clf, X, Y)
-
-    clf = svm.SVC(kernel="linear", C=1.0, probability = True)
-    test_classifier(clf, X, Y)
-    
     #SVC_Means=[]
     #for day in range(100):
     #    SVC_Means.append(test_classifier(clf, X, Y))
