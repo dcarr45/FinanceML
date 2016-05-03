@@ -71,7 +71,7 @@ def test_classifier(clf, X, Y):
 def main():
 
     X, baseline, Y = loadData()
-
+    print baseline
     print type(X)
     print type(baseline)
     print type(Y)
