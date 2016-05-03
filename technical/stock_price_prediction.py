@@ -49,7 +49,7 @@ def loadData():
 
     X = preprocessing.scale(X)
 
-    return X , baseline, y
+    return X , baseline.T, y
 
 def test_classifier(clf, X, Y):
     folds = StratifiedKFold(Y, 2)
