@@ -66,8 +66,9 @@ def test_classifier(clf, X, Y):
 def main():
 
     X, Y = loadData()
-
+    baseline = [X[0] for x in range(len(X))]
     print X
+    print baseline
 
     # clf = linear_model.SGDClassifier(loss='log')
     # test_classifier(clf, X, Y)
@@ -88,8 +89,8 @@ def main():
     #print SVC_Means
 
 
-    clf = KNeighborsClassifier()
-    test_classifier(clf, X, Y)
+    # clf = KNeighborsClassifier()
+    # test_classifier(clf, X, Y)
 
 if __name__ == '__main__':
     main()
