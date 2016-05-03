@@ -21,7 +21,7 @@ TIME_HORIZON = 30
 def loadData():
 
     data_df = pd.DataFrame.from_csv('feature_matrix.csv')
-    print data_df[-5:]
+    # print data_df[-5:]
 
     #load feature headers
     filename = 'features.csv'
@@ -41,12 +41,15 @@ def loadData():
     #create output
     y = np.array(data_df[LABEL].values)
 
+    baseline = np.array([X[x][0] for x in range(len(X))])
+
+    print baseline[-5:]
     print X[-5:]
-    print y[-5:]
+    # print y[-5:]
 
     X = preprocessing.scale(X)
 
-    return X , y
+    return X , baseline.T, y
 
 def test_classifier(clf, X, Y):
     folds = StratifiedKFold(Y, 2)
@@ -65,20 +68,49 @@ def test_classifier(clf, X, Y):
 
 def main():
 
-    X, Y = loadData()
+    X, baseline, Y = loadData()
 
-    clf = linear_model.SGDClassifier(loss='log')
-    test_classifier(clf, X, Y)
+    print type(X)
+    print type(baseline)
+    print type(Y)
 
-    clf = GaussianNB()
-    test_classifier(clf, X, Y)
+    print X.size
+    print baseline.size
+    print Y.size
 
-    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
-    test_classifier(clf, X, Y)
+    print type(X[0])
+    print type(baseline[0])
+    print type(Y[0])
 
     clf = svm.SVC(kernel="linear", C=1.0, probability = True)
+    print 'Baseline: '
+    test_classifier(clf, baseline, Y )
+    print 'Model: '
     test_classifier(clf, X, Y)
-    
+
+    # clf = linear_model.SGDClassifier(loss='log')
+    # test_classifier(clf, X, Y)
+    #
+    # clf = KNeighborsClassifier()
+    # test_classifier(clf, X, Y)
+    #
+    # clf = GaussianNB()
+    # test_classifier(clf, X, Y)
+    #
+    # clf = RandomForestClassifier(n_estimators=10, max_depth=10)
+    # test_classifier(clf, X, Y)
+    #
+    # clf = svm.SVC(kernel="linear", C=1.0, probability = True)
+    # print 'Baseline: '
+    # test_classifier(clf, baseline, Y )
+    # print 'Model: '
+    # test_classifier(clf, X, Y)
+
+
+
+
+
+
     #SVC_Means=[]
     #for day in range(100):
     #    SVC_Means.append(test_classifier(clf, X, Y))
@@ -86,8 +118,7 @@ def main():
     #print SVC_Means
 
 
-    clf = KNeighborsClassifier()
-    test_classifier(clf, X, Y)
+
 
 if __name__ == '__main__':
     main()
