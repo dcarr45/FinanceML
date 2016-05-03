@@ -69,12 +69,20 @@ def test_classifier(clf, X, Y):
 def main():
 
     X, baseline, Y = loadData()
+    
+    print type(X)
+    print type(baseline)
+    print type(Y)
 
-    clf = svm.SVC(kernel="linear", C=1.0, probability = True)
-    print 'Baseline: '
-    test_classifier(clf, baseline, Y )
-    print 'Model: '
-    test_classifier(clf, X, Y)
+    print type(X[0])
+    print type(baseline[0])
+    print type(Y[0])
+
+    # clf = svm.SVC(kernel="linear", C=1.0, probability = True)
+    # print 'Baseline: '
+    # test_classifier(clf, baseline, Y )
+    # print 'Model: '
+    # test_classifier(clf, X, Y)
 
     # clf = linear_model.SGDClassifier(loss='log')
     # test_classifier(clf, X, Y)
