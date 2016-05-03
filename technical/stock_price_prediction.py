@@ -41,7 +41,7 @@ def loadData():
     #create output
     y = np.array(data_df[LABEL].values)
 
-    baseline = np.array(data_df['return_SPY'])
+    baseline = np.array(data_df['return_SPY'].values)
 
 
 
