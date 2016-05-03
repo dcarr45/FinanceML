@@ -12,6 +12,15 @@ ticker ='SPY'
 START_DATE = datetime.datetime(2000, 1, 1)
 END_DATE = datetime.datetime(2016, 3, 20)
 
+def last_day_of_month(date):
+    if date.month == 12:
+        return date.replace(day=31)
+    return date.replace(month=date.month+1, day=1) - datetime.timedelta(days=1)
+
+def is_ld(date):
+    ld = last_day_of_month(date)
+    return date == ld
+
 def getHistoricalData():
         return web.DataReader(ticker, 'yahoo', START_DATE, END_DATE)
 
@@ -21,14 +30,20 @@ def getDateAndPrice():
     # Date,	Open, High,	Low, Close, Volume, Adj Close
     df = getHistoricalData()['Adj Close']
     dates = df.index.values
-    dates = [str(pd.to_datetime(ts))[:10] for ts in dates]
+    dates = [pd.to_datetime(ts) for ts in dates]
+    #dates = [str(pd.to_datetime(ts))[:10] for ts in dates]
     prices = df.values
     return dates, prices
 
 
 def main():
-    d, p = getDateAndPrice(ticker)
-    return [[d[i-1],p[i]-1] for i in range(1,len(d))if d[i].split('-')[2]=='01']
+    d, p = getDateAndPrice()
+    return [[d[i],p[i]] for i in range(len(d))if is_ld(d[i])]
 
 if __name__ == '__main__':
-    main()
+    f = open('label.csv','wb')
+    writer = csv.writer(f)
+    writer.writerow(['#Date','SPY_adj_close'])
+    for row in main():
+        writer.writerow(row)
+    f.close()
