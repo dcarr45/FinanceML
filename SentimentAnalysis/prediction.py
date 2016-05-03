@@ -8,7 +8,6 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
 
 
-# player,year,stint,teamId,lgID,G,AB,R,H,2B,3B,HR,RBI,SB,CS,BB,SO,IBB,HBP,SH,SF,GIDP
 def load_features():
     f = open('full_features.csv', 'r')
     lines = f.readlines()
@@ -23,7 +22,6 @@ def load_features():
     return features
 
 
-# playerID,yearID,gameNum,gameID,teamID,lgID,GP,startingPos
 def load_label():
     f = open('label.csv', 'r')
     lines = f.readlines()
@@ -34,9 +32,9 @@ def load_label():
         line = line.strip().split(',')
         if line[0] == '#':
             continue
-        player = line[0]
-        year = line[1]
-        all_stars[(player, year)] = 1
+        date = line[0]
+        price = line[1]
+        label[(date, price)] = 1
 
     return label
 
@@ -45,25 +43,25 @@ def load():
     return load_features(), load_allstars()
 
 
-def create_input(batting):
-    # don't want to cinlude playerID, sting, team, league year in predicition
-    SKIP = 5
-    WIDTH = len(batting[0]) - SKIP
-    X = scipy.zeros((len(batting), WIDTH))
-    for i in range(0, len(batting)):
+def create_input(features):
+    # don't want to inlude date
+    SKIP = 1
+    WIDTH = len(features[0])
+    X = scipy.zeros((len(features), WIDTH))
+    for i in range(0, len(features)):
         for j in range(SKIP, WIDTH):
-                X[i, j-SKIP] = batting[i][j] if batting[i][j] != '' else 0
-    return X
+                X[i, j-SKIP] = features[i][j]
+    return X[:-1] # have to chop off last month
 
 
-def create_output(batting, all_stars):
-    Y = scipy.zeros(len(batting))
-    for i in range(0, len(batting)):
-        player = batting[i][0]
-        year = batting[i][1]
-        if (player, year) in all_stars:
+def create_output(features, label):
+    Y = scipy.zeros(len(label)-1)
+    for i in range(0, len(label)-1):
+        price1 = label[i][1]
+        price2 = label[i+1][1]
+        if price2 > price1: # if price increased over a month
             Y[i] = 1
-    print 'Number of all stars', sum(Y)
+    print 'Number of price increases', sum(Y)
     return Y
 
 

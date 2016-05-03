@@ -5,6 +5,7 @@ import pandas_datareader.data as web
 import datetime
 import numpy as np
 import csv
+from get_pages import file_dt
 
 #Set Time Frame
 #(year, month, day)
@@ -31,14 +32,13 @@ def getDateAndPrice():
     df = getHistoricalData()['Adj Close']
     dates = df.index.values
     dates = [pd.to_datetime(ts) for ts in dates]
-    #dates = [str(pd.to_datetime(ts))[:10] for ts in dates]
     prices = df.values
     return dates, prices
 
 
 def main():
     d, p = getDateAndPrice()
-    return [[d[i],p[i]] for i in range(len(d))if is_ld(d[i])]
+    return [[file_dt(d[i]),p[i]] for i in range(len(d))if is_ld(d[i])]
 
 if __name__ == '__main__':
     f = open('label.csv','wb')
