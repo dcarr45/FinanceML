@@ -43,7 +43,7 @@ def loadData():
 
     print X[-5:]
     print y[-5:]
-    
+
     X = preprocessing.scale(X)
 
     return X , y
@@ -60,6 +60,7 @@ def test_classifier(clf, X, Y):
         prediction = clf.predict_proba(X[test])
         aucs.append(roc_auc_score(Y[test], prediction[:, 1]))
     print clf.__class__.__name__, aucs, np.mean(aucs)
+    return np.means(aucs)
 
 
 def main():
@@ -76,8 +77,14 @@ def main():
     test_classifier(clf, X, Y)
 
     clf = svm.SVC(kernel="linear", C=1.0, probability = True)
-    test_classifier(clf, X, Y)
-    
+
+    SVC_Means=[]
+    for day in range(100):
+        SVC_Means.append(test_classifier(clf, X, Y))
+
+    print SVC_Means
+
+
     clf = KNeighborsClassifier()
     test_classifier(clf, X, Y)
 
