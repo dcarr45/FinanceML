@@ -13,37 +13,22 @@ START_DATE = datetime.datetime(2000, 1, 1)
 END_DATE = datetime.datetime(2016, 3, 20)
 
 def getHistoricalData():
+        return web.DataReader(ticker, 'yahoo', START_DATE, END_DATE)
 
-        df = web.DataReader(ticker, 'yahoo', START_DATE, END_DATE)
-        # Date (index), Open, High, Low, Close, Volume, Adj Close
-        #process data ahead of time
-        #df = df.ix[:,[-1]]
-        # filename = ticker + '.csv'
-        # df.to_csv(filename, sep = ',')
-        return df.as_matrix()
 
-def getDateAndPrice(ticker):
-    # csv format
+def getDateAndPrice():
+    # df format
     # Date,	Open, High,	Low, Close, Volume, Adj Close
-    # f = open(ticker + '.csv', 'r')
-    # lines = f.readlines()
-    # f.close()
-    lines = getHistoricalData()
-    dates = []
-    prices = []
-    for line in lines[1:]:
-        line = line.strip()
-        line = line.split(',')
-        date, price = line[0], float(line[1])
-        dates.append(date)
-        prices.append(price)
+    df = getHistoricalData()['Adj Close']
+    dates = df.index.values
+    dates = [str(pd.to_datetime(ts))[:10] for ts in dates]
+    prices = df.values
     return dates, prices
 
 
 def main():
-    getHistoricalData()
-    dates, prices = getDateAndPrice(ticker)
-
+    d, p = getDateAndPrice(ticker)
+    return [[d[i-1],p[i]-1] for i in range(1,len(d))if d[i].split('-')[2]=='01']
 
 if __name__ == '__main__':
     main()

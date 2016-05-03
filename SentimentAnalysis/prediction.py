@@ -9,27 +9,27 @@ from sklearn.cross_validation import StratifiedKFold
 
 
 # player,year,stint,teamId,lgID,G,AB,R,H,2B,3B,HR,RBI,SB,CS,BB,SO,IBB,HBP,SH,SF,GIDP
-def load_batting():
-    f = open('Batting.csv', 'r')
+def load_features():
+    f = open('full_features.csv', 'r')
     lines = f.readlines()
     f.close()
 
-    batting = []
+    features = []
     for line in lines:
         line = line.strip()
         if line[0] == '#':
             continue
-        batting.append(line.split(','))
-    return batting
+        features.append(line.split(','))
+    return features
 
 
 # playerID,yearID,gameNum,gameID,teamID,lgID,GP,startingPos
-def load_allstars():
-    f = open('AllstarFull.csv', 'r')
+def load_label():
+    f = open('label.csv', 'r')
     lines = f.readlines()
     f.close()
 
-    all_stars = {}
+    label = {}
     for line in lines:
         line = line.strip().split(',')
         if line[0] == '#':
@@ -38,11 +38,11 @@ def load_allstars():
         year = line[1]
         all_stars[(player, year)] = 1
 
-    return all_stars
+    return label
 
 
 def load():
-    return load_batting(), load_allstars()
+    return load_features(), load_allstars()
 
 
 def create_input(batting):
@@ -83,7 +83,7 @@ def test_classifier(clf, X, Y):
 
 
 def main():
-    batting, all_stars = load()
+    features, all_stars = load()
     X = create_input(batting)
     Y = create_output(batting, all_stars)
 
