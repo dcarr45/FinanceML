@@ -8,6 +8,13 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
 from loadSPYData import last_day_of_month, is_ld
 
+def lastday(datestring):
+    #YYYY/MM/DD
+    y,m,d = datestring.split('/')
+    y,m,d = int(y),int(m),int(d)
+    dt = datetime.datetime(y,m,d)
+    return is_ld(dt)
+
 def load_features():
     f = open('full_features.csv', 'r')
     lines = f.readlines()
@@ -60,7 +67,7 @@ def create_output(features, label):
     i,price1,price2 = 0,0,0
     for date in label:
         if price1==0: price1 = label[date] # set price1 if first price of month
-        if is_ld(date) and i < LENGTH: # if is last day of month
+        if lastday(date) and i < LENGTH: # if is last day of month
             price2 = label[date]
             Y[i] = 1 if price1 > price2 else 0
             i+=1
@@ -91,7 +98,7 @@ def test_classifier(clf, X, Y):
 
 def main():
     features, label = load()
-    X = create_input(feature)
+    X = create_input(features)
     Y = create_output(features, label)
 
     clf = linear_model.SGDClassifier(loss='log')
