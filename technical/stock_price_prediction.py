@@ -41,7 +41,9 @@ def loadData():
     #create output
     y = np.array(data_df[LABEL].values)
 
-    baseline = np.array([X[x][0] for x in range(len(X))])
+    baseline = np.array(data_df['return_SPY'])
+
+
 
     print baseline[-5:]
     print X[-5:]
@@ -49,7 +51,7 @@ def loadData():
 
     X = preprocessing.scale(X)
 
-    return X , baseline.T, y
+    return X , baseline, y
 
 def test_classifier(clf, X, Y):
     folds = StratifiedKFold(Y, 2)
