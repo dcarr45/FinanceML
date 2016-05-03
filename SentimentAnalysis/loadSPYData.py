@@ -12,22 +12,23 @@ ticker ='SPY'
 START_DATE = datetime.datetime(2000, 1, 1)
 END_DATE = datetime.datetime(2016, 3, 20)
 
-def getHistoricalData(ticker):
+def getHistoricalData():
 
         df = web.DataReader(ticker, 'yahoo', START_DATE, END_DATE)
         # Date (index), Open, High, Low, Close, Volume, Adj Close
         #process data ahead of time
         #df = df.ix[:,[-1]]
-        filename = ticker + '.csv'
-        df.to_csv(filename, sep = ',')
-
+        # filename = ticker + '.csv'
+        # df.to_csv(filename, sep = ',')
+        return df.as_matrix()
 
 def getDateAndPrice(ticker):
     # csv format
     # Date,	Open, High,	Low, Close, Volume, Adj Close
-    f = open(ticker + '.csv', 'r')
-    lines = f.readlines()
-    f.close()
+    # f = open(ticker + '.csv', 'r')
+    # lines = f.readlines()
+    # f.close()
+    lines = getHistoricalData()
     dates = []
     prices = []
     for line in lines[1:]:
