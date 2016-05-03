@@ -11,7 +11,7 @@ from get_pages import file_dt
 #(year, month, day)
 ticker ='SPY'
 START_DATE = datetime.datetime(2000, 1, 1)
-END_DATE = datetime.datetime(2016, 3, 20)
+END_DATE = datetime.datetime.today() #(2016, 3, 20)
 
 def last_day_of_month(date):
     if date.month == 12:
@@ -38,7 +38,7 @@ def getDateAndPrice():
 
 def main():
     d, p = getDateAndPrice()
-    return [[file_dt(d[i]),p[i]] for i in range(len(d))if is_ld(d[i])]
+    return [[file_dt(d[i]),p[i]] for i in range(len(d))]# if is_ld(d[i])]
 
 if __name__ == '__main__':
     f = open('label.csv','wb')
