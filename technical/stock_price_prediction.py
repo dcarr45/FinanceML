@@ -76,9 +76,9 @@ def main():
     print type(baseline)
     print type(Y)
 
-    print X.size
-    print baseline.size
-    print Y.size
+    print X[0].size
+    print baseline[0].size
+    print Y[0].size
 
     print type(X[0])
     print type(baseline[0])
