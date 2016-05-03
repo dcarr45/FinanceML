@@ -9,11 +9,12 @@ import scipy as sp
 import csv
 from pprint import pprint
 from sklearn import linear_model
+from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import roc_auc_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
-
+from sklearn import svm, preprocessing
 
 TIME_HORIZON = 30
 
@@ -21,7 +22,6 @@ def loadData():
 
     data_df = pd.DataFrame.from_csv('feature_matrix.csv')
     print data_df[-5:]
-
 
     #load feature headers
     filename = 'features.csv'
@@ -44,24 +44,49 @@ def loadData():
     print X[-5:]
     print y[-5:]
 
+    X = preprocessing.scale(X)
+
     return X , y
 
+def test_classifier(clf, X, Y):
+    folds = StratifiedKFold(Y, 2)
+    aucs = []
+    for train, test in folds:
+        # Sizes
+        # print X[train].shape, Y[train].shape
+        # print X[test].shape, len(prediction)
+
+        clf.fit(X[train], Y[train])
+        prediction = clf.predict_proba(X[test])
+        aucs.append(roc_auc_score(Y[test], prediction[:, 1]))
+    print clf.__class__.__name__, aucs, np.mean(aucs)
+    return np.means(aucs)
 
 
 def main():
-    loadData()
-    # currentPrice, futurePrice, features = prepareFeatures(feature_matrix)
-    # X = getInput(features)
 
-    # print currentPrice[0:5]
-    # print futurePrice[0:5]
-    # print type(features)
-    # print type(features[0])
-    # print type(features[0][0])
+    X, Y = loadData()
+
+    clf = linear_model.SGDClassifier(loss='log')
+    test_classifier(clf, X, Y)
+
+    clf = GaussianNB()
+    test_classifier(clf, X, Y)
+
+    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
+    test_classifier(clf, X, Y)
+
+    clf = svm.SVC(kernel="linear", C=1.0, probability = True)
+
+    SVC_Means=[]
+    for day in range(100):
+        SVC_Means.append(test_classifier(clf, X, Y))
+
+    print SVC_Means
 
 
-    # print features[0]
-    # print features[0][0]
+    clf = KNeighborsClassifier()
+    test_classifier(clf, X, Y)
 
 if __name__ == '__main__':
     main()

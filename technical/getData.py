@@ -31,11 +31,8 @@ def loadTickers():
     return stockTickers, indexTickers
 
 def getHistoricalData(ticker):
-
         df = web.DataReader(ticker, 'yahoo', START_DATE, END_DATE)
         # Date (index), Open, High, Low, Close, Volume, Adj Close
-        #process data ahead of time
-        #df = df.ix[:,[-1]]
         filename = ticker + '.csv'
         df.to_csv(filename, sep = ',')
 
@@ -62,8 +59,6 @@ def calcDailyPercentChange(prices):
         .as_matrix()
     deltaPrice = [x[0] for x in df_prices]
     return np.array(deltaPrice)
-
-
 
 def calc30DayVol(percentChange):
     vol = np.zeros_like(percentChange)
@@ -131,7 +126,7 @@ def combineTechnicalIndicators(ticker):
         headers = ['date', 'return_'+ ticker, 'vol_'+ ticker, 'RSI_'+ ticker]
 
     df_features = pd.DataFrame(features, columns=headers)
-    print df_features[25:35]
+    # print df_features[25:35]
     return df_features
 
 
@@ -148,7 +143,7 @@ def joinFeatures(tickers):
     feature_matrix.drop(feature_matrix.index[:lagTime+1], inplace=True)
     feature_matrix.drop(feature_matrix.index[-lagTime:], inplace=True)
 
-    print feature_matrix
+    # print feature_matrix
     return feature_matrix
 
 
