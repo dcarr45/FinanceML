@@ -117,7 +117,7 @@ def make_features():
     for term in terms:
         for feat in feats:
             full_terms.append(term.split()[0]+"_"+feat)
-    writer.writerow(["Date"]+full_terms)
+    writer.writerow(["#Date"]+full_terms)
     for date in daterange(START_DATE,END_DATE):
         month,day,year = date.month,date.day,date.year
         if day == 1:
@@ -145,7 +145,8 @@ def make_features():
                         pos_refs_per_ref, neg_refs_per_ref,
                         senti_diffs_per_ref])
             print app
-            writer.writerow([file_dt(date)]+app)
+            wd = file_dt(last_day_of_month(date)
+            writer.writerow([wd]+app)
     f.close()
 
 # polarity = (p - n)/(p + n)
