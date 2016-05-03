@@ -66,7 +66,7 @@ def test_classifier(clf, X, Y):
 def main():
 
     X, Y = loadData()
-    baseline = [X[x][0] for x in range(len(X))]
+    baseline = np.array([X[x][0] for x in range(len(X))])
     print baseline[-5:]
     print type(baseline)
 
