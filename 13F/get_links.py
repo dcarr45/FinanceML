@@ -20,7 +20,7 @@ if __name__ == "__main__":
             ind = open(dir + '/index.txt', 'w')
 
             for line in open(dir + '/form.idx', 'r').readlines()[10:]:
-                if line.split()[0].startswith('13F'):
+                if line.split()[0].startswith('13F-HR'):
                     ind.write(line)
             ind.close()
 

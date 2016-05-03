@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 
+#######################
+#Used for trying to distribute the initial form downloads
+#Storing to hadoop from subprocess.call inside partitions didn't work
+#######################
+
+
+
 from pyspark import SparkConf, SparkContext
 
 import urllib2

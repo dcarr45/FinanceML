@@ -12,20 +12,20 @@ def extract(spark):
     for line in list(open('cusip.txt')):
         cusips.add(line.replace('"', '').strip())
 
-    forms = spark.wholeTextFiles('hdfs:///user/carrdp/13F/2014/Q4/*', 1272) \
+    forms = spark.wholeTextFiles('hdfs:///user/carrdp/13F/2015/Q2/*', 500) \
         .map(lambda (fname, file): parse(file, cusips, fname)) \
-    
+        .saveAsTextFile('hdfs:///user/carrdp/13F/2015/test')    
+    '''
     forms.cache()
 
     investors_shares = forms.flatMap(lambda vals: [(cusip, (1, amt)) for (cusip, amt) in vals]) \
         .reduceByKey(lambda x, y: (x[0] + y[0], x[1] + y[1])) \
         .map(lambda (cusip, (inv, shares)): (cusip, inv, shares, 1.0 * shares / inv)) \
-        .saveAsTextFile('hdfs:///user/carrdp/13F/2014/Q4/parsed') 
+        .saveAsTextFile('hdfs:///user/carrdp/13F/2015/Q2/parsed') 
 
-    '''
     result = num_investors.keyBy(lambda (c, n): c).join(num_shares.keyBy(lambda (c1, n1): c1)) \
         .map(lambda (cusip, ((c1, inv), (c2, shares))): (cusip, inv, shares, 1.0 * shares / inv)) \
-        .saveAsTextFile('hdfs:///user/carrdp/13F/2014/Q4/parsed')
+        .saveAsTextFile('hdfs:///user/carrdp/13F/2015/Q2/parsed')
     '''
 
     #TODO:  download market cap and p/e, and eventually open/close
@@ -39,11 +39,12 @@ def parse(file, valid, fname):
     try:
         fund = str(soup.find('name').contents)
     except AttributeError:
-        return [(fname, 5)]
+        return [(fname, 'NO FUND')]
     
     try:
         if str(soup.headerData.submissionType.string).startswith("13F-HR"):
-            data = defaultdict(int)
+            #data = defaultdict(int)
+            data = {}
 
             for tag in soup.find_all('infoTable'):
                 try:
@@ -51,18 +52,18 @@ def parse(file, valid, fname):
                     type = str(tag.shrsOrPrnAmt.sshPrnamtType.string)
                     shares = int(tag.shrsOrPrnAmt.sshPrnamt.string.split(".")[0])
 
-                    if cusip in valid and type == "SH":
-                        data[cusip] += shares
+                    if cusip == "478160104" and type == "SH":
+                        return (str(soup.headerData.filerInfo.filer.credentials.cik.string))
                 
                 except AttributeError:   
-                    data['INTERIOR ERROR'] += 1
+                    data['INTERIOR ERROR'] = 'goo'
 
             return data.items()
 
         else:
-            return [(fname + ': ' + str(soup.headerData.submissionType.string), 1)]
+            return [(fname + '\t' + str(soup.headerData.submissionType.string), 'gooo')]
     except AttributeError:
-       return [(fname, 10)]
+       return [(fname, 'BAD FORM')]
         
 
 if __name__ == "__main__":
