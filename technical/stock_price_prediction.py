@@ -67,26 +67,26 @@ def main():
 
     X, Y = loadData()
     baseline = [X[x][0] for x in range(len(X))]
-    print X
-    print baseline
+    print X[-5:]
+    print type(baseline)
 
-    clf = linear_model.SGDClassifier(loss='log')
-    test_classifier(clf, X, Y)
-
-    clf = KNeighborsClassifier()
-    test_classifier(clf, X, Y)
-
-    clf = GaussianNB()
-    test_classifier(clf, X, Y)
-
-    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
-    test_classifier(clf, X, Y)
-
-    clf = svm.SVC(kernel="linear", C=1.0, probability = True)
-    print 'Baseline: '
-    test_classifier(clf, baseline, Y )
-    print 'Model: '
-    test_classifier(clf, X, Y)
+    # clf = linear_model.SGDClassifier(loss='log')
+    # test_classifier(clf, X, Y)
+    #
+    # clf = KNeighborsClassifier()
+    # test_classifier(clf, X, Y)
+    #
+    # clf = GaussianNB()
+    # test_classifier(clf, X, Y)
+    #
+    # clf = RandomForestClassifier(n_estimators=10, max_depth=10)
+    # test_classifier(clf, X, Y)
+    #
+    # clf = svm.SVC(kernel="linear", C=1.0, probability = True)
+    # print 'Baseline: '
+    # test_classifier(clf, baseline, Y )
+    # print 'Model: '
+    # test_classifier(clf, X, Y)
 
 
 
