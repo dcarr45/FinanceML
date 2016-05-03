@@ -1,19 +1,21 @@
 # conda install scikit-learn
 import scipy
 import numpy
+import datetime as dt
 from sklearn import linear_model
 from sklearn.metrics import roc_auc_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
 from loadSPYData import last_day_of_month, is_ld
+from loadTickers import daterange, START_DATE
 
 def lastday(datestring):
     #YYYY/MM/DD
     y,m,d = datestring.split('/')
     y,m,d = int(y),int(m),int(d)
-    dt = datetime.datetime(y,m,d)
-    return is_ld(dt)
+    date = dt.datetime(y,m,d)
+    return is_ld(date)
 
 def load_features():
     f = open('full_features.csv', 'r')
@@ -21,10 +23,8 @@ def load_features():
     f.close()
 
     features = []
-    for line in lines:
+    for line in lines[1:]:
         line = line.strip()
-        if line[0] == '#':
-            continue
         features.append(line.split(','))
     return features
 
@@ -35,10 +35,8 @@ def load_label():
     f.close()
 
     label = {}
-    for line in lines:
+    for line in lines[1:]:
         line = line.strip().split(',')
-        if line[0] == '#':
-            continue
         date = line[0]
         price = line[1]
         label[date] = price
@@ -65,11 +63,11 @@ def create_output(features, label):
     LENGTH = len(features)-1
     Y = scipy.zeros(LENGTH)
     i,price1,price2 = 0,0,0
-    for date in label:
+    for date in daterange(START_DATE,dt.datetime.today()):
         if price1==0: price1 = label[date] # set price1 if first price of month
         if lastday(date) and i < LENGTH: # if is last day of month
             price2 = label[date]
-            Y[i] = 1 if price1 > price2 else 0
+            Y[i] = 1 if price1 > price2 else 0 # 1 if price increased over month
             i+=1
             price1=0
     # for i in range(0, len(label)-1):
