@@ -70,17 +70,28 @@ def main():
     print X
     print baseline
 
-    # clf = linear_model.SGDClassifier(loss='log')
-    # test_classifier(clf, X, Y)
-    #
-    # clf = GaussianNB()
-    # test_classifier(clf, X, Y)
-    #
-    # clf = RandomForestClassifier(n_estimators=10, max_depth=10)
-    # test_classifier(clf, X, Y)
-    #
-    # clf = svm.SVC(kernel="linear", C=1.0, probability = True)
-    # test_classifier(clf, X, Y)
+    clf = linear_model.SGDClassifier(loss='log')
+    test_classifier(clf, X, Y)
+
+    clf = KNeighborsClassifier()
+    test_classifier(clf, X, Y)
+
+    clf = GaussianNB()
+    test_classifier(clf, X, Y)
+
+    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
+    test_classifier(clf, X, Y)
+
+    clf = svm.SVC(kernel="linear", C=1.0, probability = True)
+    print 'Baseline: '
+    test_classifier(clf, X, baseline)
+    print 'Model: '
+    test_classifier(clf, X, Y)
+
+
+
+
+
 
     #SVC_Means=[]
     #for day in range(100):
@@ -89,8 +100,7 @@ def main():
     #print SVC_Means
 
 
-    # clf = KNeighborsClassifier()
-    # test_classifier(clf, X, Y)
+
 
 if __name__ == '__main__':
     main()
