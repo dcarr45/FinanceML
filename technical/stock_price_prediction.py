@@ -41,14 +41,14 @@ def loadData():
     #create output
     y = np.array(data_df[LABEL].values)
 
-    baseline = np.array(data_df['return_SPY']).tolist()
+    baseline = np.array(data_df['return_SPY'].values)
 
 
 
     print baseline[-5:]
     print X[-5:]
     # print y[-5:]
-
+    baseline = preprocessing.scale(baseline)
     X = preprocessing.scale(X)
 
     return X , baseline, y
@@ -71,13 +71,16 @@ def test_classifier(clf, X, Y):
 def main():
 
     X, baseline, Y = loadData()
+
+    baseline = baseline.reshape(-1,1)
+    
     print baseline[-5:]
     print type(X)
     print type(baseline)
     print type(Y)
 
     print X[0].size
-    # print baseline[0].size
+    print baseline[0]
     print Y[0].size
 
     print type(X[0])
