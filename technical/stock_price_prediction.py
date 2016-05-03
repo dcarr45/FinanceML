@@ -41,14 +41,14 @@ def loadData():
     #create output
     y = np.array(data_df[LABEL].values)
 
-    baseline = np.array(data_df['return_SPY']).tolist()
+    baseline = np.array(data_df['return_SPY'])
 
 
 
     print baseline[-5:]
     print X[-5:]
     # print y[-5:]
-
+    baseline = preprocessing.scale(baseline).T
     X = preprocessing.scale(X)
 
     return X , baseline, y
