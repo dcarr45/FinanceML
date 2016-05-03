@@ -41,8 +41,11 @@ def loadData():
     #create output
     y = np.array(data_df[LABEL].values)
 
+    baseline = np.array([X[x][0] for x in range(len(X))])
+
+    print baseline[-5:]
     print X[-5:]
-    print y[-5:]
+    # print y[-5:]
 
     X = preprocessing.scale(X)
 
@@ -66,9 +69,7 @@ def test_classifier(clf, X, Y):
 def main():
 
     X, Y = loadData()
-    baseline = np.array([X[x][0] for x in range(len(X))])
-    print baseline[-5:]
-    print type(baseline)
+    
 
     # clf = linear_model.SGDClassifier(loss='log')
     # test_classifier(clf, X, Y)
