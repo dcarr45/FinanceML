@@ -1,0 +1,10 @@
+make standalone:
+
+* load pos and neg from master, not individual csv's
+* make script for update pages/ dir with json files from nyt
+    - check today's date vs latest date in pages/ dir
+        if out of date, scrape last month from nyt & store in pages/ dir
+* move sentiment shit from nyt to sentiment.py
+* make runnable from clean (setup.py)
+* clean up all methods
+
