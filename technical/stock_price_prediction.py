@@ -67,7 +67,7 @@ def main():
 
     X, Y = loadData()
     baseline = [X[x][0] for x in range(len(X))]
-    print X[-5:]
+    print baseline[-5:]
     print type(baseline)
 
     # clf = linear_model.SGDClassifier(loss='log')
