@@ -145,7 +145,7 @@ def make_features():
                         pos_refs_per_ref, neg_refs_per_ref,
                         senti_diffs_per_ref])
             print app
-            wd = file_dt(last_day_of_month(date)
+            wd = file_dt(last_day_of_month(date))
             writer.writerow([wd]+app)
     f.close()
 
