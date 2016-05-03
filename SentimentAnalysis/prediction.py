@@ -6,7 +6,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
-
+from loadSPYData import last_day_of_month, is_ld
 
 def load_features():
     f = open('full_features.csv', 'r')
@@ -34,13 +34,13 @@ def load_label():
             continue
         date = line[0]
         price = line[1]
-        label[(date, price)] = 1
+        label[date] = price
 
     return label
 
 
 def load():
-    return load_features(), load_allstars()
+    return load_features(), load_label()
 
 
 def create_input(features):
@@ -55,13 +55,22 @@ def create_input(features):
 
 
 def create_output(features, label):
-    Y = scipy.zeros(len(label)-1)
-    for i in range(0, len(label)-1):
-        price1 = label[i][1]
-        price2 = label[i+1][1]
-        if price2 > price1: # if price increased over a month
-            Y[i] = 1
-    print 'Number of price increases', sum(Y)
+    LENGTH = len(features)-1
+    Y = scipy.zeros(LENGTH)
+    i,price1,price2 = 0,0,0
+    for date in label:
+        if price1==0: price1 = label[date] # set price1 if first price of month
+        if is_ld(date) and i < LENGTH: # if is last day of month
+            price2 = label[date]
+            Y[i] = 1 if price1 > price2 else 0
+            i+=1
+            price1=0
+    # for i in range(0, len(label)-1):
+    #     price1 = label[i][1]
+    #     price2 = label[i+1][1]
+    #     if price2 > price1: # if price increased over a month
+    #         Y[i] = 1
+    print 'Number of price increases', sum(Y), LENTH, i
     return Y
 
 
@@ -81,9 +90,9 @@ def test_classifier(clf, X, Y):
 
 
 def main():
-    features, all_stars = load()
-    X = create_input(batting)
-    Y = create_output(batting, all_stars)
+    features, label = load()
+    X = create_input(feature)
+    Y = create_output(features, label)
 
     clf = linear_model.SGDClassifier(loss='log')
     test_classifier(clf, X, Y)
