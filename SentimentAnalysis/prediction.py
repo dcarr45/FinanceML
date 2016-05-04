@@ -2,12 +2,12 @@
 import scipy
 import numpy
 import datetime as dt
+import csv
 from sklearn import linear_model
 from sklearn.metrics import roc_auc_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
-from sklearn.neighbors.nearest_centroid import NearestCentroid
 from sklearn import svm, preprocessing
 from loadSPYData import last_day_of_month, is_ld
 from loadTickers import daterange, START_DATE
@@ -132,7 +132,6 @@ def find_baseline():
         Y = create_output(features, label)
         clfs = [linear_model.SGDClassifier(loss='log'),
                 GaussianNB(),
-                NearestCentroid(),
                 RandomForestClassifier(n_estimators=10, max_depth=10),
                 svm.SVC(kernel="linear", C=1.0, probability = True)]
         writer.writerow(['#Feature']+
@@ -234,7 +233,6 @@ def main():
 
         clfs = [linear_model.SGDClassifier(loss='log'),
                 GaussianNB(),
-                NearestCentroid(),
                 RandomForestClassifier(n_estimators=10, max_depth=10),
                 svm.SVC(kernel="linear", C=1.0, probability = True)]
 
