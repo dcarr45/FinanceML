@@ -13,6 +13,7 @@ from loadSPYData import last_day_of_month, is_ld
 from loadTickers import daterange, START_DATE
 from get_pages import file_dt
 
+BASELINE = 'AAPL_pol'
 
 def date_from_str(datestring):
     #YYYY/MM/DD
@@ -67,7 +68,7 @@ def create_input(features):
     return X
 
 
-def create_baseline(features, feature='SPY_subj'):
+def create_baseline(features, feature=BASELINE):
     col = features[0].index(feature)
     features=features[1:]
     X = scipy.zeros((len(features), 1))
@@ -228,75 +229,72 @@ def main():
     Y = create_output(features, label)
 
     feat_list = features[0][1:] #skip date
-    for feature in feat_list:
-        baseline = create_baseline(features, feature) # SPY_subj
+    baseline = create_baseline(features, BASELINE) # GE_sdpr
 
-        clfs = [linear_model.SGDClassifier(loss='log'),
-                GaussianNB(),
-                RandomForestClassifier(n_estimators=10, max_depth=10),
-                svm.SVC(kernel="linear", C=1.0, probability = True)]
+    clfs = [RandomForestClassifier(n_estimators=10, max_depth=10),
+            svm.SVC(kernel="linear", C=1.0, probability = True)]
 
-        print """
-        BASELINE
-        ########
-        ########
-        """
-        best = (0,None)
-        for clf in clfs:
-            tc = test_classifier(clf, baseline, Y)
-            if tc > best[0]:
-                best = (tc,clf.__class__.__name__)
-            print tc
-            print
+    print """
+    BASELINE
+    ########
+    ########
+    """
+    best = (0,None)
+    for clf in clfs:
+        tc = test_classifier(clf, baseline, Y)
+        if tc > best[0]:
+            best = (tc,clf.__class__.__name__)
+        print tc
+        print
 
-        baseline = preprocessing.scale(baseline)
+    baseline = preprocessing.scale(baseline)
 
-        print """
-        BASELINE -- PREPROCESSED
-        ########
-        ########
-        """
+    print """
+    BASELINE -- PREPROCESSED
+    ########
+    ########
+    """
 
-        best = (0,None)
-        for clf in clfs:
-            tc = test_classifier(clf, baseline, Y)
-            if tc > best[0]:
-                best = (tc,clf.__class__.__name__)
-            print tc
-            print
+    best = (0,None)
+    for clf in clfs:
+        tc = test_classifier(clf, baseline, Y)
+        if tc > best[0]:
+            best = (tc,clf.__class__.__name__)
+        print tc
+        print
 
-        print """
+    print """
 
 
-        REAL RUN
-        ########
-        ########
-        """
+    REAL RUN
+    ########
+    ########
+    """
 
-        best = (0,None)
-        for clf in clfs:
-            tc = test_classifier(clf, baseline, Y)
-            if tc > best[0]:
-                best = (tc,clf.__class__.__name__)
-            print tc
-            print
+    best = (0,None)
+    for clf in clfs:
+        tc = test_classifier(clf, baseline, Y)
+        if tc > best[0]:
+            best = (tc,clf.__class__.__name__)
+        print tc
+        print
 
-        X = preprocessing.scale(X)
-        print """
-        REAL RUN -- PREPROCESSED
-        ########
-        ########
-        """
+    X = preprocessing.scale(X)
+    print """
+    REAL RUN -- PREPROCESSED
+    ########
+    ########
+    """
 
-        best = (0,None)
-        for clf in clfs:
-            tc = test_classifier(clf, baseline, Y)
-            if tc > best[0]:
-                best = (tc,clf.__class__.__name__)
-            print tc
-            print
+    best = (0,None)
+    for clf in clfs:
+        tc = test_classifier(clf, baseline, Y)
+        if tc > best[0]:
+            best = (tc,clf.__class__.__name__)
+        print tc
+        print
 
 
 if __name__ == '__main__':
-    #main()
-    find_baseline()
+    main()
+    #find_baseline()
