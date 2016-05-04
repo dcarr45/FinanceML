@@ -8,9 +8,7 @@ import scipy as sp
 import csv
 from pprint import pprint
 from sklearn import linear_model
-from sklearn.neighbors import KNeighborsClassifier
 from sklearn.metrics import roc_auc_score
-from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
 from sklearn import svm, preprocessing
@@ -50,7 +48,7 @@ def loadData():
     return X , baseline, y
 
 def test_classifier(clf, X, Y):
-    folds = StratifiedKFold(Y, 5)
+    folds = StratifiedKFold(Y, 10)
     aucs = []
     for train, test in folds:
         # Sizes
