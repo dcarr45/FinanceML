@@ -113,7 +113,7 @@ def main():
     X = create_input(features)
     Y = create_output(features, label)
 
-    baseline = [x[1] for x in X] # SPY_subj
+    baseline = create_input([x[1] for x in features]) # SPY_subj
 
     print """BASELINE
     --
