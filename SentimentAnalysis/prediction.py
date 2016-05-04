@@ -67,7 +67,7 @@ def create_input(features):
 
 
 def create_baseline(features, feature='SPY_subj'):
-    col = features[1].index(feature)
+    col = features[0].index(feature)
     features=features[1:]
     X = scipy.zeros((len(features), 1))
     for i in range(len(features)):
@@ -158,7 +158,7 @@ def main():
 
     print """
 
-    
+
     BASELINE -- PREPROCESSED
     ########
     ########
