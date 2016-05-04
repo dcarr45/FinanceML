@@ -7,6 +7,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
+from sklearn.neighbors.nearest_centroid import NearestCentroid
 from sklearn import svm, preprocessing
 from loadSPYData import last_day_of_month, is_ld
 from loadTickers import daterange, START_DATE
@@ -123,14 +124,20 @@ def list_avg(l):
     return sum(l)/float(len(l))
 
 def find_baseline():
+        f = open('baseline.csv','wb')
+        writer = csv.writer(f)
+
         features, label = load()
 
         Y = create_output(features, label)
         clfs = [linear_model.SGDClassifier(loss='log'),
                 GaussianNB(),
+                NearestCentroid(),
                 RandomForestClassifier(n_estimators=10, max_depth=10),
                 svm.SVC(kernel="linear", C=1.0, probability = True)]
-
+        writer.writerow(['#Feature']+
+            [clf.__class__.__name__ for clf in clfs]+
+            [clf.__class__.__name__ + "_preproccessed" for clf in clfs])
         feat_list = features[0][1:] #skip date
         best_feature = (0,1,None)#(avg_auc,avg_auc_adj,feature)
         best_feature_p = (0,1,None)#(avg_auc,avg_auc_adj,feature)
@@ -177,11 +184,11 @@ def find_baseline():
             ########
             """
 
-            run_auc = []
+            run_auc_p = []
             best = (0,1,None) #(auc,auc_adj,clf)
             for clf in clfs:
                 auc = test_classifier(clf, baseline, Y)
-                run_auc.append(auc)
+                run_auc_p.append(auc)
                 x = auc - 0.5
                 auc_adj = x if x > 0 else -x
                 if auc_adj < best[1]:
@@ -192,13 +199,13 @@ def find_baseline():
             print best[2]
             print "WITH AN AUC OF "
             print best[0]
-            raa = list_avg(run_auc)
+            raa = list_avg(run_auc_p)
             x = raa - 0.5
             raa_adj = x if x > 0 else -x
             if raa_adj < best_feature_p[1]:
                 best_feature_p = (raa,raa_adj,feature)
             print "\n\n\n"
-
+            writer.writerow([feature]+run_auc+run_auc_p)
         print """
 
 
@@ -212,6 +219,7 @@ def find_baseline():
         print "WITH AN AVG AUC OF:"
         print best_feature_p[0]
         print
+        f.close()
         return best_feature[2],best_feature_p[2]
 
 def main():
@@ -226,6 +234,7 @@ def main():
 
         clfs = [linear_model.SGDClassifier(loss='log'),
                 GaussianNB(),
+                NearestCentroid(),
                 RandomForestClassifier(n_estimators=10, max_depth=10),
                 svm.SVC(kernel="linear", C=1.0, probability = True)]
 
