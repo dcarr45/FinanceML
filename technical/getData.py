@@ -19,16 +19,12 @@ def loadTickers():
     f = open(filename, 'r')
     lines = f.readlines()
     f.close()
-    stockTickers = []
-    indexTickers = []
+    tickers = []
     for line in lines[1:]:
         line = line.strip()
-        if '^' in line:
-            indexTickers.append(line)
-        else:
-            stockTickers.append(line)
-    print stockTickers, indexTickers
-    return stockTickers, indexTickers
+        tickers.append(line)
+    print tickers
+    return tickers
 
 def getHistoricalData(ticker):
         df = web.DataReader(ticker, 'yahoo', START_DATE, END_DATE)
@@ -112,9 +108,8 @@ def combineTechnicalIndicators(ticker):
         np_prices = np.array(prices)
         label = np.zeros_like(np_prices)
 
-    #create label for price of SPY
+    #create label/output for price of SPY
         for x in range(len(np_prices[:-lagTime])):
-            print x
             if np_prices[x] < np_prices[x + lagTime]:
                 label[x] = 1
             else:
@@ -126,11 +121,11 @@ def combineTechnicalIndicators(ticker):
         headers = ['date', 'return_'+ ticker, 'vol_'+ ticker, 'RSI_'+ ticker]
 
     df_features = pd.DataFrame(features, columns=headers)
-    # print df_features[25:35]
     return df_features
 
 
 def joinFeatures(tickers):
+    #load all ticker dataframes into list
     df_list = []
     for ticker in tickers:
         getHistoricalData(ticker)
@@ -138,16 +133,15 @@ def joinFeatures(tickers):
         df_list.append(combineTechnicalIndicators(ticker))
         print ticker + ' transformations made.'
 
-
+    #join all ticker dataframes on date
     feature_matrix = reduce(lambda left,right: pd.merge(left,right,on='date'), df_list)
+    # account for rows that do not include accurate features
+    # first and last 30 days (i.e. used in 30 day vol calc or output cration)
     feature_matrix.drop(feature_matrix.index[:lagTime+1], inplace=True)
     feature_matrix.drop(feature_matrix.index[-lagTime:], inplace=True)
 
     # print feature_matrix
     return feature_matrix
-
-
-
 
 def main():
 
@@ -155,38 +149,20 @@ def main():
     if not os.path.exists(rawDataDirectory):
         os.makedirs(rawDataDirectory)
 
-    stockTickers, indexTickers = loadTickers()
-
+    tickers = loadTickers()
+    #store raw data in a sub directory
     os.chdir(wd + '/' + rawDataDirectory)
 
-    # ticker ='AAPL'
-    # getHistoricalData(ticker)
+    feature_matrix = joinFeatures(tickers)
 
-    feature_matrix = joinFeatures(stockTickers)
-
+    #go back to working directory
     os.chdir(wd)
+
+    #save feature matrix in working directory 
     feature_matrix.set_index('date')
     feature_matrix.to_csv('feature_matrix.csv', sep = ',')
 
 
-    # print type(dates)
-    # print type(dates[1])
-    # print type(prices)
-    # print type(percentChange)
-    # print type(vol)
-    # print type(RSI)
-    #
-    # print len(dates)
-    # print len(prices)
-    # print len(percentChange)
-    # print len(vol)
-    # print len(RSI)
-
-    # print dates
-    # print prices
-    # print percentChange[0:50]
-    # print vol[0:50]
-    # print RSI[0:50]
 
 if __name__ == '__main__':
     main()
