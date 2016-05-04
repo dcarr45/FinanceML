@@ -119,6 +119,100 @@ def test_classifier(clf, X, Y):
     print clf.__class__.__name__, aucs
     return numpy.mean(aucs)
 
+def list_avg(l):
+    return sum(l)/float(len(l))
+
+def find_baseline():
+        features, label = load()
+
+        X = create_input(features)
+        clfs = [linear_model.SGDClassifier(loss='log'),
+                GaussianNB(),
+                RandomForestClassifier(n_estimators=10, max_depth=10),
+                svm.SVC(kernel="linear", C=1.0, probability = True)]
+
+        feat_list = features[0][1:] #skip date
+        best_feature = (0,1,None)#(avg_auc,avg_auc_adj,feature)
+        best_feature_p = (0,1,None)#(avg_auc,avg_auc_adj,feature)
+        for feature in feat_list:
+            print "BEGINNING NEW RUN WITH FEATURE:"
+            print feature
+            print
+            baseline = create_baseline(features, feature) # SPY_subj
+
+
+            print """
+            BASELINE
+            ########
+            ########
+            """
+            run_auc = []
+            best = (0,1,None) #(auc,auc_adj,clf)
+            for clf in clfs:
+                auc = test_classifier(clf, baseline, Y)
+                run_auc.append(auc)
+                x = auc - 0.5
+                auc_adj = x if x > 0 else -x
+                if auc_adj < best[1]:
+                    best = (auc,auc_adj,clf.__class__.__name__)
+                print tc
+                print
+            print "THE BEST CLASSIFIER WAS"
+            print best[2]
+            print "WITH AN AUC OF "
+            print best[0]
+            raa = list_avg(run_auc)
+            x = raa - 0.5
+            raa_adj = x if x > 0 else -x
+            if raa_adj < best_feature[1]:
+                best_feature = (raa,raa_adj,feature)
+
+
+            baseline = preprocessing.scale(baseline)
+
+            print """
+
+            BASELINE -- PREPROCESSED
+            ########
+            ########
+            """
+
+            run_auc = []
+            best = (0,1,None) #(auc,auc_adj,clf)
+            for clf in clfs:
+                auc = test_classifier(clf, baseline, Y)
+                run_auc.append(auc)
+                x = auc - 0.5
+                auc_adj = x if x > 0 else -x
+                if auc_adj < best[1]:
+                    best = (auc,auc_adj,clf.__class__.__name__)
+                print tc
+                print
+            print "THE BEST CLASSIFIER WAS"
+            print best[2]
+            print "WITH AN AUC OF "
+            print best[0]
+            raa = list_avg(run_auc)
+            x = raa - 0.5
+            raa_adj = x if x > 0 else -x
+            if raa_adj < best_feature_p[1]:
+                best_feature_p = (raa,raa_adj,feature)
+            print "\n\n\n"
+
+        print """
+
+
+        THE BEST FEATURE WAS:"""
+        print best_feature(2)
+        print "WITH AN AVG AUC OF:"
+        print best_feature(0)
+        print """
+        THE BEST PREPROCESSED FEATURE WAS:"""
+        print best_feature_p(2)
+        print "WITH AN AVG AUC OF:"
+        print best_feature_p(0)
+        print
+    return best_feature(2),best_feature_p(2)
 
 def main():
     features, label = load()
@@ -126,73 +220,76 @@ def main():
     X = create_input(features)
     Y = create_output(features, label)
 
-    baseline = create_baseline(features) # SPY_subj
+    feat_list = features[0][1:] #skip date
+    for feature in feat_list:
+        baseline = create_baseline(features, feature) # SPY_subj
 
-    clfs = [linear_model.SGDClassifier(loss='log'),
-            GaussianNB(),
-            RandomForestClassifier(n_estimators=10, max_depth=10),
-            svm.SVC(kernel="linear", C=1.0, probability = True)]
+        clfs = [linear_model.SGDClassifier(loss='log'),
+                GaussianNB(),
+                RandomForestClassifier(n_estimators=10, max_depth=10),
+                svm.SVC(kernel="linear", C=1.0, probability = True)]
 
-    print """
-    BASELINE
-    ########
-    ########
-    """
-    best = (0,None)
-    for clf in clfs:
-        tc = test_classifier(clf, baseline, Y)
-        if tc > best[0]:
-            best = (tc,clf.__class__.__name__)
-        print tc
-        print
+        print """
+        BASELINE
+        ########
+        ########
+        """
+        best = (0,None)
+        for clf in clfs:
+            tc = test_classifier(clf, baseline, Y)
+            if tc > best[0]:
+                best = (tc,clf.__class__.__name__)
+            print tc
+            print
 
-    print """
-    REAL RUN
-    ########
-    ########
-    """
+        baseline = preprocessing.scale(baseline)
 
-    best = (0,None)
-    for clf in clfs:
-        tc = test_classifier(clf, baseline, Y)
-        if tc > best[0]:
-            best = (tc,clf.__class__.__name__)
-        print tc
-        print
+        print """
+        BASELINE -- PREPROCESSED
+        ########
+        ########
+        """
 
-    X = preprocessing.scale(X)
-    baseline = preprocessing.scale(baseline)
+        best = (0,None)
+        for clf in clfs:
+            tc = test_classifier(clf, baseline, Y)
+            if tc > best[0]:
+                best = (tc,clf.__class__.__name__)
+            print tc
+            print
 
-    print """
+        print """
 
 
-    BASELINE -- PREPROCESSED
-    ########
-    ########
-    """
+        REAL RUN
+        ########
+        ########
+        """
 
-    best = (0,None)
-    for clf in clfs:
-        tc = test_classifier(clf, baseline, Y)
-        if tc > best[0]:
-            best = (tc,clf.__class__.__name__)
-        print tc
-        print
+        best = (0,None)
+        for clf in clfs:
+            tc = test_classifier(clf, baseline, Y)
+            if tc > best[0]:
+                best = (tc,clf.__class__.__name__)
+            print tc
+            print
 
-    print """
-    REAL RUN -- PREPROCESSED
-    ########
-    ########
-    """
+        X = preprocessing.scale(X)
+        print """
+        REAL RUN -- PREPROCESSED
+        ########
+        ########
+        """
 
-    best = (0,None)
-    for clf in clfs:
-        tc = test_classifier(clf, baseline, Y)
-        if tc > best[0]:
-            best = (tc,clf.__class__.__name__)
-        print tc
-        print
+        best = (0,None)
+        for clf in clfs:
+            tc = test_classifier(clf, baseline, Y)
+            if tc > best[0]:
+                best = (tc,clf.__class__.__name__)
+            print tc
+            print
 
 
 if __name__ == '__main__':
-    main()
+    #main()
+    find_baseline()
