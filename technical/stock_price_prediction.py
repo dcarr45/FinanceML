@@ -1,6 +1,5 @@
 #stock_price_prediction.py
 
-
 import pandas as pd
 import pandas_datareader.data as web
 import datetime
@@ -40,15 +39,12 @@ def loadData():
     X = np.array(data_df[FEATURES].values)
     #create output
     y = np.array(data_df[LABEL].values)
-
+    #create baseline
     baseline = np.array(data_df['return_SPY'].values)
 
-
-
-    print baseline[-5:]
-    print X[-5:]
-    # print y[-5:]
-    baseline = preprocessing.scale(baseline)
+    #normalize each feature around 0
+    #single features require reshape
+    baseline = preprocessing.scale(baseline).reshape(-1,1)
     X = preprocessing.scale(X)
 
     return X , baseline, y
@@ -72,56 +68,18 @@ def main():
 
     X, baseline, Y = loadData()
 
-    baseline = baseline.reshape(-1,1)
-    
-    print baseline[-5:]
-    print type(X)
-    print type(baseline)
-    print type(Y)
-
-    print X[0].size
-    print baseline[0]
-    print Y[0].size
-
-    print type(X[0])
-    print type(baseline[0])
-    print type(Y[0])
-
-    clf = svm.SVC(kernel="linear", C=1.0, probability = True)
-    print 'Baseline: '
+    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
+    print 'Random Forest Baseline Mean AUC: '
     test_classifier(clf, baseline, Y )
-    print 'Model: '
+    print 'Random Forest Model Mean AUC: '
     test_classifier(clf, X, Y)
 
-    # clf = linear_model.SGDClassifier(loss='log')
-    # test_classifier(clf, X, Y)
-    #
-    # clf = KNeighborsClassifier()
-    # test_classifier(clf, X, Y)
-    #
-    # clf = GaussianNB()
-    # test_classifier(clf, X, Y)
-    #
-    # clf = RandomForestClassifier(n_estimators=10, max_depth=10)
-    # test_classifier(clf, X, Y)
-    #
-    # clf = svm.SVC(kernel="linear", C=1.0, probability = True)
-    # print 'Baseline: '
-    # test_classifier(clf, baseline, Y )
-    # print 'Model: '
-    # test_classifier(clf, X, Y)
 
-
-
-
-
-
-    #SVC_Means=[]
-    #for day in range(100):
-    #    SVC_Means.append(test_classifier(clf, X, Y))
-
-    #print SVC_Means
-
+    clf = svm.SVC(kernel="linear", C=1.0, probability = True)
+    print 'SVM Baseline Mean AUC: '
+    test_classifier(clf, baseline, Y )
+    print 'SVM Model Mean AUC: '
+    test_classifier(clf, X, Y)
 
 
 
