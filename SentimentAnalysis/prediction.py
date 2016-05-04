@@ -138,9 +138,12 @@ def main():
     ########
     ########
     """
-
+    best = (0,None)
     for clf in clfs:
-        print test_classifier(clf, baseline, Y)
+        tc = test_classifier(clf, baseline, Y)
+        if tc > best[0]:
+            best = (tc,clf.__class__.__name__)
+        print tc
         print
 
     print """
@@ -149,8 +152,12 @@ def main():
     ########
     """
 
+    best = (0,None)
     for clf in clfs:
-        print test_classifier(clf, X, Y)
+        tc = test_classifier(clf, baseline, Y)
+        if tc > best[0]:
+            best = (tc,clf.__class__.__name__)
+        print tc
         print
 
     X = preprocessing.scale(X)
@@ -164,8 +171,12 @@ def main():
     ########
     """
 
+    best = (0,None)
     for clf in clfs:
-        print test_classifier(clf, baseline, Y)
+        tc = test_classifier(clf, baseline, Y)
+        if tc > best[0]:
+            best = (tc,clf.__class__.__name__)
+        print tc
         print
 
     print """
@@ -174,8 +185,12 @@ def main():
     ########
     """
 
+    best = (0,None)
     for clf in clfs:
-        print test_classifier(clf, X, Y)
+        tc = test_classifier(clf, baseline, Y)
+        if tc > best[0]:
+            best = (tc,clf.__class__.__name__)
+        print tc
         print
 
 
