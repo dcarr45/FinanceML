@@ -9,12 +9,17 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
 from loadSPYData import last_day_of_month, is_ld
 from loadTickers import daterange, START_DATE
+from get_pages import file_dt
 
-def lastday(datestring):
+
+def date_from_str(datestring):
     #YYYY/MM/DD
     y,m,d = datestring.split('/')
     y,m,d = int(y),int(m),int(d)
-    date = dt.datetime(y,m,d)
+    return dt.datetime(y,m,d)
+
+def lastday(datestring):
+    date = date_from_str(datestring)
     return is_ld(date)
 
 def load_features():
@@ -58,23 +63,31 @@ def create_input(features):
                 X[i, j-SKIP] = features[i][j]
     return X[:-1] # have to chop off last month
 
+def get_prices(datestring, label):
+    date = date_from_str(datestring)
+    y,m = date.year,date.month
+    y2,m2 = y,m
+    if m==12:
+        m2=0
+        y2+=1
+    price1,price2 = 0,0
+    for date in daterange(dt.datetime(y,m,1),dt.datetime(y2,m2+1,1)):
+        dat = file_dt(date)
+        if dat in label:
+            if price1==0:
+                price1=label[dat]
+            price2=label[dat]
+    return price1,price2
 
 def create_output(features, label):
     LENGTH = len(features)-1
     Y = scipy.zeros(LENGTH)
     i,price1,price2 = 0,0,0
-    for date in daterange(START_DATE,dt.datetime.today()):
-        if price1==0: price1 = label[date] # set price1 if first price of month
-        if lastday(date) and i < LENGTH: # if is last day of month
-            price2 = label[date]
-            Y[i] = 1 if price1 > price2 else 0 # 1 if price increased over month
-            i+=1
-            price1=0
-    # for i in range(0, len(label)-1):
-    #     price1 = label[i][1]
-    #     price2 = label[i+1][1]
-    #     if price2 > price1: # if price increased over a month
-    #         Y[i] = 1
+    for i in range(0, len(features)-1):
+        date=features[i][0]
+        price1,price2 = get_prices(date,label)
+        if price2 > price1: # if price increased over a month
+            Y[i] = 1
     print 'Number of price increases', sum(Y), LENTH, i
     return Y
 
