@@ -7,6 +7,7 @@ from sklearn.metrics import roc_auc_score
 from sklearn.naive_bayes import GaussianNB
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.cross_validation import StratifiedKFold
+from sklearn import svm, preprocessing
 from loadSPYData import last_day_of_month, is_ld
 from loadTickers import daterange, START_DATE
 from get_pages import file_dt
@@ -115,8 +116,8 @@ def test_classifier(clf, X, Y):
         clf.fit(X[train], Y[train])
         prediction = clf.predict_proba(X[test])
         aucs.append(roc_auc_score(Y[test], prediction[:, 1]))
-    print clf.__class__.__name__
-    print aucs, numpy.mean(aucs)
+    print clf.__class__.__name__, aucs
+    return numpy.mean(aucs)
 
 
 def main():
@@ -127,31 +128,55 @@ def main():
 
     baseline = create_baseline(features) # SPY_subj
 
-    print """BASELINE
-    --
-    --"""
+    clfs = [linear_model.SGDClassifier(loss='log'),
+            GaussianNB(),
+            RandomForestClassifier(n_estimators=10, max_depth=10),
+            svm.SVC(kernel="linear", C=1.0, probability = True)]
 
-    clf = linear_model.SGDClassifier(loss='log')
-    test_classifier(clf, baseline, Y)
+    print """
+    BASELINE
+    ########
+    ########
+    """
 
-    clf = GaussianNB()
-    test_classifier(clf, baseline, Y)
+    for clf in clfs:
+        print test_classifier(clf, baseline, Y)
+        print
 
-    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
-    test_classifier(clf, baseline, Y)
+    print """
+    REAL RUN
+    ########
+    ########
+    """
 
-    print """REAL RUN
-    --
-    --"""
+    for clf in clfs:
+        print test_classifier(clf, X, Y)
+        print
 
-    clf = linear_model.SGDClassifier(loss='log')
-    test_classifier(clf, X, Y)
+    X = preprocessing.scale(X)
+    baseline = preprocessing.scale(baseline)
 
-    clf = GaussianNB()
-    test_classifier(clf, X, Y)
+    print """
 
-    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
-    test_classifier(clf, X, Y)
+    
+    BASELINE -- PREPROCESSED
+    ########
+    ########
+    """
+
+    for clf in clfs:
+        print test_classifier(clf, baseline, Y)
+        print
+
+    print """
+    REAL RUN -- PREPROCESSED
+    ########
+    ########
+    """
+
+    for clf in clfs:
+        print test_classifier(clf, X, Y)
+        print
 
 
 if __name__ == '__main__':
