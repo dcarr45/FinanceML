@@ -42,7 +42,7 @@ def loadData():
     #create baseline
     baseline = np.array(data_df['return_SPY'].values)
 
-    #normalize each feature around 0 
+    #normalize each feature around 0
     #single features require reshape
     baseline = preprocessing.scale(baseline).reshape(-1,1)
     X = preprocessing.scale(X)
@@ -68,10 +68,6 @@ def main():
 
     X, baseline, Y = loadData()
 
-
-
-
-
     clf = RandomForestClassifier(n_estimators=10, max_depth=10)
     print 'Random Forest Baseline Mean AUC: '
     test_classifier(clf, baseline, Y )
@@ -79,42 +75,11 @@ def main():
     test_classifier(clf, X, Y)
 
 
-
     clf = svm.SVC(kernel="linear", C=1.0, probability = True)
     print 'SVM Baseline Mean AUC: '
     test_classifier(clf, baseline, Y )
     print 'SVM Model Mean AUC: '
     test_classifier(clf, X, Y)
-
-    # clf = linear_model.SGDClassifier(loss='log')
-    # test_classifier(clf, X, Y)
-    #
-    # clf = KNeighborsClassifier()
-    # test_classifier(clf, X, Y)
-    #
-    # clf = GaussianNB()
-    # test_classifier(clf, X, Y)
-    #
-    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
-    test_classifier(clf, X, Y)
-    #
-    # clf = svm.SVC(kernel="linear", C=1.0, probability = True)
-    # print 'Baseline: '
-    # test_classifier(clf, baseline, Y )
-    # print 'Model: '
-    # test_classifier(clf, X, Y)
-
-
-
-
-
-
-    #SVC_Means=[]
-    #for day in range(100):
-    #    SVC_Means.append(test_classifier(clf, X, Y))
-
-    #print SVC_Means
-
 
 
 

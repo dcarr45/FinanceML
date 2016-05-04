@@ -158,10 +158,9 @@ def main():
     #go back to working directory
     os.chdir(wd)
 
-    #save feature matrix in working directory 
+    #save feature matrix in working directory
     feature_matrix.set_index('date')
     feature_matrix.to_csv('feature_matrix.csv', sep = ',')
-
 
 
 if __name__ == '__main__':
