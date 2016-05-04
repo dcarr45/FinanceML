@@ -50,7 +50,7 @@ def loadData():
     return X , baseline, y
 
 def test_classifier(clf, X, Y):
-    folds = StratifiedKFold(Y, 2)
+    folds = StratifiedKFold(Y, 5)
     aucs = []
     for train, test in folds:
         # Sizes
