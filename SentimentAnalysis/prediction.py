@@ -88,7 +88,7 @@ def create_output(features, label):
         price1,price2 = get_prices(date,label)
         if price2 > price1: # if price increased over a month
             Y[i] = 1
-    print 'Number of price increases', sum(Y), LENTH, i
+    print 'Number of price increases', int(sum(Y))
     return Y
 
 
@@ -109,8 +109,28 @@ def test_classifier(clf, X, Y):
 
 def main():
     features, label = load()
+
     X = create_input(features)
     Y = create_output(features, label)
+
+    baseline = [x[1] for x in X] # SPY_subj
+
+    print """BASELINE
+    --
+    --"""
+
+    clf = linear_model.SGDClassifier(loss='log')
+    test_classifier(clf, baseline, Y)
+
+    clf = GaussianNB()
+    test_classifier(clf, baseline, Y)
+
+    clf = RandomForestClassifier(n_estimators=10, max_depth=10)
+    test_classifier(clf, baseline, Y)
+
+    print """REAL RUN
+    --
+    --"""
 
     clf = linear_model.SGDClassifier(loss='log')
     test_classifier(clf, X, Y)
