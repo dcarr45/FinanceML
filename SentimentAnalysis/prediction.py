@@ -125,7 +125,7 @@ def list_avg(l):
 def find_baseline():
         features, label = load()
 
-        X = create_input(features)
+        Y = create_output(features, label)
         clfs = [linear_model.SGDClassifier(loss='log'),
                 GaussianNB(),
                 RandomForestClassifier(n_estimators=10, max_depth=10),
@@ -155,7 +155,7 @@ def find_baseline():
                 auc_adj = x if x > 0 else -x
                 if auc_adj < best[1]:
                     best = (auc,auc_adj,clf.__class__.__name__)
-                print tc
+                print auc
                 print
             print "THE BEST CLASSIFIER WAS"
             print best[2]
@@ -186,7 +186,7 @@ def find_baseline():
                 auc_adj = x if x > 0 else -x
                 if auc_adj < best[1]:
                     best = (auc,auc_adj,clf.__class__.__name__)
-                print tc
+                print auc
                 print
             print "THE BEST CLASSIFIER WAS"
             print best[2]
@@ -203,16 +203,16 @@ def find_baseline():
 
 
         THE BEST FEATURE WAS:"""
-        print best_feature(2)
+        print best_feature[2]
         print "WITH AN AVG AUC OF:"
-        print best_feature(0)
+        print best_feature[0]
         print """
         THE BEST PREPROCESSED FEATURE WAS:"""
-        print best_feature_p(2)
+        print best_feature_p[2]
         print "WITH AN AVG AUC OF:"
-        print best_feature_p(0)
+        print best_feature_p[0]
         print
-    return best_feature(2),best_feature_p(2)
+        return best_feature[2],best_feature_p[2]
 
 def main():
     features, label = load()
