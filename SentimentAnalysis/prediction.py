@@ -28,7 +28,7 @@ def load_features():
     f.close()
 
     features = []
-    for line in lines[1:]:
+    for line in lines:
         line = line.strip()
         features.append(line.split(','))
     return features
@@ -55,13 +55,24 @@ def load():
 
 def create_input(features):
     # don't want to inlude date
+    features=features[1:]
     SKIP = 1
     WIDTH = len(features[0])
     X = scipy.zeros((len(features), WIDTH))
-    for i in range(0, len(features)):
+    for i in range(len(features)):
         for j in range(SKIP, WIDTH):
                 X[i, j-SKIP] = features[i][j]
-    return X[:-1] # have to chop off last month
+    return X
+
+
+def create_baseline(features, feature='SPY_subj'):
+    col = features[1].index(feature)
+    features=features[1:]
+    X = scipy.zeros((len(features), 1))
+    for i in range(len(features)):
+        X[i,0] = features[i][col]
+    return X
+
 
 def get_prices(datestring, label):
     date = date_from_str(datestring)
@@ -80,10 +91,11 @@ def get_prices(datestring, label):
     return price1,price2
 
 def create_output(features, label):
-    LENGTH = len(features)-1
+    features=features[1:]
+    LENGTH = len(features)
     Y = scipy.zeros(LENGTH)
     i,price1,price2 = 0,0,0
-    for i in range(0, len(features)-1):
+    for i in range(0, LENGTH):
         date=features[i][0]
         price1,price2 = get_prices(date,label)
         if price2 > price1: # if price increased over a month
@@ -113,7 +125,7 @@ def main():
     X = create_input(features)
     Y = create_output(features, label)
 
-    baseline = create_input([x[1] for x in features]) # SPY_subj
+    baseline = create_baseline(features) # SPY_subj
 
     print """BASELINE
     --
