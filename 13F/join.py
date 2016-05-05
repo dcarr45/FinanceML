@@ -2,18 +2,17 @@ from pyspark import SparkConf, SparkContext
 
 def process(spark):
 
-    forms = spark.textFile('hdfs:///user/carrdp/13F/parsed_noempty') \
-        .map(lambda line: eval(line))
+    forms = spark.wholeTextFiles('hdfs:///user/carrdp/13F/*/*/parse_file/') \
+        .map(lambda (fname, file): agg(fname, file)) \
+        .saveAsTextFile('hdfs:///user/carrdp/13F/agged')    
 
-    num_investors = forms.flatMap(lambda vals: [(cusip, 1) for (cusip, amt, tag) in vals]) \
-        .reduceByKey(lambda x, y: x + y)
-    
-    num_shares = forms.flatMap(lambda vals: [(cusip, amt) for (cusip, amt, tag) in vals]) \
-        .reduceByKey(lambda x, y: x + y)
+def agg(fname, file):
+    year = str(fname.split("/")[-3])
+    qtr = str(fname.split("/")[-2])
 
-    result = num_investors.keyBy(lambda (c, n): c).join(num_shares.keyBy(lambda (c1, n1): c1)) \
-        .map(lambda (cusip, ((c1, inv), (c2, shares))): (cusip, inv, shares, 1.0 * shares / inv)) \
-        .saveAsTextFile('hdfs:///user/carrdp/13F/result')
+    data = [eval(str(line)) for line in file.split('\n') if line and 'hdfs://' not in line]
+
+    return (year + qtr, data)
 
 if __name__ == "__main__":
 
