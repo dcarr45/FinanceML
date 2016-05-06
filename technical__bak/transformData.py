@@ -45,6 +45,15 @@ def getPrices(ticker):
         prices.append(line)
     return prices
 
+def priceToPercentChange(prices):
+    for day in range(1:len(prices)):
+        prices[day][1] = percentChange(prices[day-1][1], prices[day][1])
+
+
+de
+
+
+
 # # 30 day volatility
 # # adjusted close: time series of array
 def volCalc(ticker, prices, lagTime):
@@ -58,7 +67,7 @@ def volCalc(ticker, prices, lagTime):
             for i in range(lagTime,len(prices)):
                 delta = 0
                 for day in range(1,lagTime):
-                    delta += percentChange(prices[i-day][1], prices[i-day-1][1])
+                    delta += abs(percentChange(prices[i-day][1], prices[i-day-1][1]))
                 #print delta
                 sigma30 = 100.0 * delta/lagTime
                 line = [prices[i][0], prices[i][1], sigma30]
@@ -68,13 +77,10 @@ def volCalc(ticker, prices, lagTime):
         writer = csv.writer(f)
         writer.writerows(vol)
 
-def addTimeLag():
-
-
 def percentChange(p0,p1):
     p0 = float(p0)
     p1 = float(p1)
-    return abs(p1-p0)/p0
+    return (p1-p0)/p0
 
 
 def RSICalc(ticker,prices, n=14):
