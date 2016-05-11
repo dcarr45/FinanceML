@@ -1,4 +1,4 @@
-nalysis
+# Fundamental Analysis
 > *Danny Carr*
 
 Our fundamental analysis was performed by analyzing the 13F forms filed by large institutional money managers from 2000
@@ -19,10 +19,8 @@ the FTP database.
 |Form Type|Company Name|                  CIK|        Date Filed|       File Name|
 |---|---|---|---|---|
 |1-A|         JURRASIC INDUSTRIES, INC.   |1545961| 2012-03-27|    edgar/data/1545961/9999999997-12-004575.txt         |
-|1-A|         LYONS BANCORP INC     |         816332 |  2012-03-05|    edgar/data/816332/9999999997-12-002091.txt
-|
-|1-A/A|      ABCO Energy, Inc.                  |1300938| 2012-03-30   | edgar/data/1300938/9999999997-12-004935.txt
-|
+|1-A|         LYONS BANCORP INC     |         816332 |  2012-03-05|    edgar/data/816332/9999999997-12-002091.txt|
+|1-A/A|      ABCO Energy, Inc.                  |1300938| 2012-03-30   | edgar/data/1300938/9999999997-12-004935.txt|
 |...
 
 The first step in acquiring the the data was to download each of these index files for every relevant quarter, and
