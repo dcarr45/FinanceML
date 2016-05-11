@@ -20,6 +20,7 @@ Max Puidak
 Intelligent stock price prediction in the near-term has nearly unlimited potential. However, designing a model that does so accurately would defy years of academic study and several cornerstones in finance theory. The efficient-market hypothesis (EMH) states that asset prices fully reflect all available information. Under strict EMH, no security in a financial market will ever be mis-priced. Similarly, the random-walk hypothesis states that stock prices follow a random walk in the short-term, and are therefore, unpredictable. Yet, the evolution of machine learning techniques and the availability of ‘big’ data has led critics, scholars, and investors to question the integrity of these theories. It is the goal of this project to use machine learning techniques for the prediction of S&P 500 price trends in the near term (30-days). Specifically, the model attempts to predict the binary classification problem of “will the S&P 500 price rise in 30 days?” Three data sources were used to address our problem: technical indicators, fundamental analysis, and sentiment analysis.
 
 See each subdirectory for its respective description:
+
 1. [Technical Analysis](https://github.com/dcarr45/FinanceML/tree/master/technical)
 2. [Fundamental Analysis](https://github.com/dcarr45/FinanceML/tree/master/13F)
 3. [Sentiment Analysis](https://github.com/dcarr45/FinanceML/tree/master/SentimentAnalysis)
