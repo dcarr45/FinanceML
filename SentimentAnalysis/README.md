@@ -45,6 +45,8 @@ sentiment indicators are all centered around 0, which is one desire of data prep
 .csv file, with each row representing one month and each column representing one of the sentiment indicators for one
 of our companies.
 
+![Sentiment Indicators](https://raw.githubusercontent.com/dcarr45/FinanceML/master/SentimentAnalysis/SentimentIndicators.png "Sentiment Indicators")
+
 
 ## Feature Construction and Data Labeling
 The final feature matrix is each sentiment indicator for each company for each month in our range, resulting in 190
